@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoyagIA – Votre voyage sur-mesure, imaginé par l'IA</title>
+  <meta name="description" content="VoyagIA crée des itinéraires de voyage personnalisés pour toute la famille grâce à l'intelligence artificielle." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sand:    #f5efe6;
+      --cream:   #fffdf9;
+      --sky:     #4db8d4;
+      --sky-dark:#2e9ab5;
+      --coral:   #f4845f;
+      --coral-dark:#d96843;
+      --text:    #2c2c2c;
+      --muted:   #6b6b6b;
+      --radius:  14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      background: var(--cream);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,253,249,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #efe9df;
+      padding: .9rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      color: var(--sky-dark);
+      text-decoration: none;
+    }
+    .logo span { color: var(--coral); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted); font-weight: 600;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--sky-dark); }
+    .nav-cta {
+      background: var(--coral); color: #fff !important;
+      padding: .45rem 1.2rem; border-radius: 50px;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: var(--coral-dark) !important; color: #fff !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 92vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
+      background:
+        radial-gradient(ellipse at 70% 10%, rgba(77,184,212,.15) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(244,132,95,.12) 0%, transparent 50%),
+        var(--sand);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(77,184,212,.15);
+      color: var(--sky-dark);
+      font-size: .85rem; font-weight: 700;
+      padding: .35rem 1rem; border-radius: 50px;
+      margin-bottom: 1.5rem;
+      letter-spacing: .04em;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      line-height: 1.2;
+      max-width: 750px;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em { color: var(--sky-dark); font-style: normal; }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--muted);
+      max-width: 580px;
+      margin-bottom: 2.5rem;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--coral); color: #fff;
+      padding: .85rem 2.2rem; border-radius: 50px;
+      font-size: 1.05rem; font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(244,132,95,.35);
+      transition: transform .18s, box-shadow .18s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(244,132,95,.45); }
+
+    .hero-illustration {
+      margin-top: 4rem;
+      display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;
+    }
+    .hero-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,.07);
+      display: flex; align-items: center; gap: .8rem;
+      font-weight: 600;
+    }
+    .hero-card .icon { font-size: 1.6rem; }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      display: inline-block;
+      font-size: .8rem; font-weight: 800; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--coral);
+      margin-bottom: .6rem;
+    }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      line-height: 1.25;
+      margin-bottom: 1rem;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 620px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── HOW IT WORKS ── */
+    #services { background: var(--cream); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .step {
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 2rem 1.8rem;
+      position: relative;
+    }
+    .step-num {
+      width: 2.4rem; height: 2.4rem;
+      background: var(--sky); color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .95rem;
+      margin-bottom: 1rem;
+    }
+    .step h3 { font-size: 1.05rem; margin-bottom: .5rem; }
+    .step p { color: var(--muted); font-size: .95rem; }
+
+    /* ── SAMPLE DELIVERABLE ── */
+    #exemple { background: var(--sand); }
+    .livrable-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 28px rgba(0,0,0,.07);
+      padding: 2.5rem;
+      max-width: 780px;
+    }
+    .livrable-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; margin-bottom: .4rem;
+    }
+    .livrable-card .trip-meta {
+      color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem;
+    }
+    .day-list { list-style: none; display: flex; flex-direction: column; gap: .8rem; }
+    .day-list li {
+      display: flex; gap: 1rem; align-items: flex-start;
+      background: var(--sand); border-radius: 10px; padding: .9rem 1rem;
+    }
+    .day-num {
+      background: var(--sky); color: #fff;
+      border-radius: 8px; padding: .2rem .6rem;
+      font-size: .8rem; font-weight: 800; white-space: nowrap; flex-shrink: 0;
+    }
+    .day-list li div { font-size: .95rem; }
+    .day-list li strong { display: block; margin-bottom: .15rem; }
+    .livrable-note {
+      margin-top: 1.5rem;
+      padding: 1rem 1.2rem;
+      background: rgba(77,184,212,.1);
+      border-left: 4px solid var(--sky);
+      border-radius: 0 8px 8px 0;
+      font-size: .9rem; color: var(--muted);
+    }
+
+    /* ── QUESTIONNAIRE ── */
+    #questionnaire { background: var(--cream); }
+    form {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 28px rgba(0,0,0,.07);
+      padding: 2.5rem;
+      max-width: 780px;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    @media (max-width: 580px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-full { grid-column: 1 / -1; }
+
+    label { display: block; font-weight: 700; font-size: .9rem; margin-bottom: .35rem; }
+    label span { color: var(--coral); }
+
+    input[type=text], input[type=email], input[type=number], input[type=date],
+    select, textarea {
+      width: 100%;
+      padding: .75rem 1rem;
+      border: 1.5px solid #e0d9cf;
+      border-radius: 8px;
+      font-family: inherit; font-size: .95rem; color: var(--text);
+      background: var(--cream);
+      transition: border-color .2s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--sky); }
+    textarea { resize: vertical; min-height: 90px; }
+
+    .form-section-title {
+      grid-column: 1 / -1;
+      font-size: .75rem; font-weight: 800; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--sky-dark);
+      padding-bottom: .4rem;
+      border-bottom: 1px solid #e8e1d6;
+      margin-top: .5rem;
+    }
+
+    .checkbox-group {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+    }
+    .checkbox-group label {
+      font-weight: 600; display: flex; align-items: center; gap: .4rem;
+      background: var(--sand); border-radius: 6px; padding: .4rem .8rem;
+      cursor: pointer; font-size: .9rem;
+      border: 1.5px solid transparent; transition: border-color .15s;
+    }
+    .checkbox-group label:has(input:checked) { border-color: var(--sky); background: rgba(77,184,212,.1); }
+    .checkbox-group input { accent-color: var(--sky); }
+
+    .radio-group { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .radio-group label {
+      font-weight: 600; display: flex; align-items: center; gap: .4rem;
+      background: var(--sand); border-radius: 6px; padding: .4rem .8rem;
+      cursor: pointer; font-size: .9rem;
+      border: 1.5px solid transparent; transition: border-color .15s;
+    }
+    .radio-group label:has(input:checked) { border-color: var(--coral); background: rgba(244,132,95,.08); }
+    .radio-group input { accent-color: var(--coral); }
+
+    /* ── AGE DROPDOWNS ── */
+    .age-dropdowns {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: .7rem;
+      margin-top: .5rem;
+    }
+    .age-dropdowns > div > label {
+      font-size: .82rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: .25rem;
+    }
+
+    /* ── DATE FIELDS ── */
+    .date-conditional {
+      margin-top: .8rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .date-conditional .date-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 580px) { .date-conditional .date-row { grid-template-columns: 1fr; } }
+    .months-group {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+    }
+    .months-group label {
+      font-weight: 600; display: flex; align-items: center; gap: .4rem;
+      background: var(--sand); border-radius: 6px; padding: .4rem .8rem;
+      cursor: pointer; font-size: .9rem;
+      border: 1.5px solid transparent; transition: border-color .15s;
+    }
+    .months-group label:has(input:checked) { border-color: var(--sky); background: rgba(77,184,212,.1); }
+    .months-group input { accent-color: var(--sky); }
+
+    /* ── BUDGET FIELD ── */
+    .budget-field { display: flex; flex-direction: column; gap: .6rem; }
+    .budget-btns { display: flex; gap: .6rem; flex-wrap: wrap; }
+    .budget-btn {
+      background: var(--sand);
+      border: 1.5px solid #e0d9cf;
+      border-radius: 8px;
+      padding: .5rem 1.1rem;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      color: var(--text);
+    }
+    .budget-btn:hover { border-color: var(--sky); background: rgba(77,184,212,.1); }
+    .budget-btn.active { border-color: var(--sky); background: rgba(77,184,212,.1); }
+
+    .submit-wrap { margin-top: 1.5rem; text-align: center; }
+    button[type=submit] {
+      background: var(--coral); color: #fff;
+      border: none; border-radius: 50px;
+      padding: .9rem 2.8rem; font-family: inherit;
+      font-size: 1.05rem; font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(244,132,95,.35);
+      transition: transform .18s, box-shadow .18s;
+    }
+    button[type=submit]:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(244,132,95,.45); }
+    .form-note { color: var(--muted); font-size: .82rem; margin-top: .6rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 2.5rem 1.5rem;
+      background: var(--sand);
+      color: var(--muted); font-size: .9rem;
+    }
+    footer a { color: var(--sky-dark); text-decoration: none; }
+    footer .logo-foot {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; color: var(--sky-dark); display: block; margin-bottom: .4rem;
+    }
+
+    /* ── TESTIMONIALS ── */
+    #avis { background: var(--cream); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+    .testimonial-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 22px rgba(0,0,0,.06);
+      padding: 2rem 1.8rem;
+      position: relative;
+      border-top: 4px solid var(--sand);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(0,0,0,.1);
+    }
+    .testimonial-card:nth-child(2) { border-top-color: rgba(77,184,212,.4); }
+    .testimonial-card:nth-child(3) { border-top-color: rgba(244,132,95,.35); }
+    .testimonial-stars { font-size: 1.1rem; margin-bottom: .8rem; letter-spacing: .05em; }
+    .testimonial-quote {
+      font-size: .97rem;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 1.4rem;
+      font-style: italic;
+    }
+    .testimonial-quote::before { content: "\201C"; font-size: 2.5rem; color: var(--sand); line-height: 0; vertical-align: -0.6rem; margin-right: .1rem; font-style: normal; font-family: 'Playfair Display', serif; }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+    }
+    .testimonial-avatar {
+      width: 2.8rem; height: 2.8rem;
+      border-radius: 50%;
+      background: var(--sand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .testimonial-name { font-weight: 800; font-size: .95rem; }
+    .testimonial-trip { font-size: .82rem; color: var(--muted); margin-top: .1rem; }
+
+    /* ── STATS BANNER ── */
+    .stats-banner {
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 2rem 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 3rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--sky-dark);
+      line-height: 1;
+    }
+    .stat-label { font-size: .85rem; color: var(--muted); margin-top: .3rem; font-weight: 600; }
+
+    /* ── RESPONSIVE NAV ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Voyag<span>IA</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Comment ça marche</a></li>
+    <li><a href="#exemple">Exemple</a></li>
+    <li><a href="#avis">Avis</a></li>
+    <li><a href="#questionnaire" class="nav-cta">Commencer</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✨ Powered by AI &amp; passion du voyage</div>
+  <h1>Votre voyage <em>sur-mesure</em>,<br/>imaginé pour toute la famille</h1>
+  <p>Répondez à notre questionnaire, et VoyagIA compose pour vous un itinéraire personnalisé, adapté à vos envies, votre budget et votre rythme.</p>
+  <a href="#questionnaire" class="btn-primary">Créer mon itinéraire →</a>
+
+  <div class="hero-illustration">
+    <div class="hero-card"><span class="icon">🗺️</span> Itinéraire jour par jour</div>
+    <div class="hero-card"><span class="icon">👨‍👩‍👧</span> Adapté à votre famille</div>
+    <div class="hero-card"><span class="icon">💶</span> Selon votre budget</div>
+    <div class="hero-card"><span class="icon">⚡</span> Livré rapidement</div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="services">
+  <div class="container">
+    <span class="section-label">Comment ça marche</span>
+    <h2>Simple, rapide, personnalisé</h2>
+    <p class="sub">En quelques minutes, vous partagez vos envies — nous nous occupons du reste.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Remplissez le questionnaire</h3>
+        <p>Destination, dates, budget, style de voyage, membres de la famille… on veut tout savoir !</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Notre IA analyse vos envies</h3>
+        <p>VoyagIA croise vos préférences avec les meilleures options disponibles pour composer votre voyage idéal.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Recevez votre itinéraire</h3>
+        <p>Un programme détaillé jour par jour, avec lieux, activités, hébergements et conseils pratiques.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Partez l'esprit tranquille</h3>
+        <p>Vous profitez — sans stress de planning — d'un voyage pensé sur-mesure pour vous.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLE DELIVERABLE -->
+<section id="exemple">
+  <div class="container">
+    <span class="section-label">Exemple de livrable</span>
+    <h2>À quoi ressemble votre itinéraire ?</h2>
+    <p class="sub">Voici un aperçu du type de document que vous recevrez — clair, complet, prêt à glisser dans votre valise.</p>
+
+    <div class="livrable-card">
+      <h3>🇵🇹 Lisbonne &amp; Algarve en famille</h3>
+      <p class="trip-meta">7 jours · 2 adultes + 2 enfants (6 et 9 ans) · Budget moyen · Juillet</p>
+      <ul class="day-list">
+        <li>
+          <span class="day-num">J1</span>
+          <div>
+            <strong>Arrivée à Lisbonne &amp; quartier de Belém</strong>
+            Visite du Monastère des Hiéronymites (entrée ~15 € /adulte, gratuit -12 ans), dégustation du pastel de nata à la Pastéis de Belém. Hôtel recommandé : Bairro Alto Hotel 3★ (~110 €/nuit).
+          </div>
+        </li>
+        <li>
+          <span class="day-num">J2</span>
+          <div>
+            <strong>Alfama &amp; tramway 28</strong>
+            Balade dans les ruelles, Musée du Fado, coucher de soleil au Miradouro da Graça. Dîner familial au restaurant A Cevicheria (~25 €/personne).
+          </div>
+        </li>
+        <li>
+          <span class="day-num">J3</span>
+          <div>
+            <strong>Sintra – Palais &amp; forêts magiques</strong>
+            Palais de la Pena (idéal pour les enfants), jardins de Monserrate. Pique-nique à prévoir, navette locale ~5 €/pers.
+          </div>
+        </li>
+        <li>
+          <span class="day-num">J4–J7</span>
+          <div>
+            <strong>Route vers l'Algarve</strong>
+            Plages de Lagos, Praia da Marinha, croisière en grotte (~20 €/adulte). Retour et vol depuis Faro.
+          </div>
+        </li>
+      </ul>
+      <div class="livrable-note">
+        💡 <strong>Le livrable complet</strong> inclut : planning heure par heure, liens de réservation, carte interactive, conseils santé &amp; sécurité, budget prévisionnel détaillé, et alternatives météo.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="avis">
+  <div class="container">
+    <span class="section-label">Ils ont voyagé avec VoyagIA</span>
+    <h2>Des familles ravies, des souvenirs inoubliables</h2>
+    <p class="sub">Découvrez ce que nos clients disent de leur expérience — des voyages pensés sur-mesure, livrés avec soin.</p>
+
+    <div class="testimonials-grid">
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-quote">Notre séjour au Japon était parfaitement calibré pour nos deux ados. Chaque journée avait le bon équilibre entre temples, street food et moments libres. L'itinéraire était si détaillé qu'on n'avait qu'à suivre — zéro stress !</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👩</div>
+          <div>
+            <div class="testimonial-name">Sophie &amp; Thomas M.</div>
+            <div class="testimonial-trip">🇯🇵 Tokyo &amp; Kyoto · 14 jours · 4 personnes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-quote">J'avais un budget serré et deux enfants en bas âge. VoyagIA a trouvé des perles cachées en Crète qu'on n'aurait jamais découvertes seuls. La carte interactive incluse dans le livrable était super pratique sur place !</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👨</div>
+          <div>
+            <div class="testimonial-name">Romain L.</div>
+            <div class="testimonial-trip">🇬🇷 Crète · 10 jours · Budget serré</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-quote">En tant que grande famille (6 personnes dont 4 enfants), les voyages sont toujours un casse-tête. VoyagIA a pensé à tout — restaurants avec chaises hautes, musées gratuits moins de 12 ans, rythme adapté. Bluffant.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👨‍👩‍👧‍👦</div>
+          <div>
+            <div class="testimonial-name">Famille Durand</div>
+            <div class="testimonial-trip">🇵🇹 Portugal · 12 jours · 6 personnes</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="stats-banner">
+      <div class="stat-item">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">clients satisfaits</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">200+</div>
+        <div class="stat-label">itinéraires livrés</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">45+</div>
+        <div class="stat-label">destinations couvertes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">48h</div>
+        <div class="stat-label">délai de livraison moyen</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUESTIONNAIRE -->
+<section id="questionnaire">
+  <div class="container">
+    <span class="section-label">Questionnaire</span>
+    <h2>Parlons de votre voyage de rêve</h2>
+    <p class="sub">Plus vous nous en dites, plus votre itinéraire sera précis et adapté. Comptez environ 5 minutes.</p>
+
+    <form
+      name="voyagia-questionnaire"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      action="/merci.html"
+    >
+      <!-- Netlify hidden inputs -->
+      <input type="hidden" name="form-name" value="voyagia-questionnaire" />
+      <p style="display:none;"><label>Ne pas remplir : <input name="bot-field" /></label></p>
+
+      <div class="form-grid">
+
+        <!-- SECTION : VOUS -->
+        <div class="form-section-title">Vos coordonnées</div>
+
+        <div>
+          <label for="prenom">Prénom <span>*</span></label>
+          <input type="text" id="prenom" name="prenom" placeholder="Marie" required />
+        </div>
+        <div>
+          <label for="nom">Nom <span>*</span></label>
+          <input type="text" id="nom" name="nom" placeholder="Dupont" required />
+        </div>
+        <div>
+          <label for="email">Email <span>*</span></label>
+          <input type="email" id="email" name="email" placeholder="marie.dupont@email.com" required />
+        </div>
+        <div>
+          <label for="telephone">Téléphone (facultatif)</label>
+          <input type="text" id="telephone" name="telephone" placeholder="+33 6 12 34 56 78" />
+        </div>
+
+        <!-- SECTION : VOYAGEURS -->
+        <div class="form-section-title">Les voyageurs</div>
+
+        <div class="form-full">
+          <label>Qui voyage ? <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="profil_voyage" value="solo" required /> 🧳 Seul(e)</label>
+            <label><input type="radio" name="profil_voyage" value="couple" /> 💑 En couple</label>
+            <label><input type="radio" name="profil_voyage" value="famille" /> 👨‍👩‍👧 En famille</label>
+            <label><input type="radio" name="profil_voyage" value="amis" /> 👯 Entre amis</label>
+            <label><input type="radio" name="profil_voyage" value="groupe" /> 🎉 Grand groupe</label>
+          </div>
+        </div>
+
+        <div>
+          <label for="nb_adultes">Nombre d'adultes <span>*</span></label>
+          <input type="number" id="nb_adultes" name="nb_adultes" min="1" max="20" value="2" required />
+        </div>
+        <div>
+          <label for="nb_enfants">Nombre d'enfants (si applicable)</label>
+          <input type="number" id="nb_enfants" name="nb_enfants" min="0" max="10" value="0" />
+        </div>
+
+        <!-- Dynamic adult age dropdowns -->
+        <div id="ages_adultes_container" class="form-full"></div>
+
+        <!-- Dynamic children age dropdowns -->
+        <div id="ages_enfants_container" class="form-full"></div>
+
+        <div class="form-full">
+          <label for="besoins_specifiques">Besoins spécifiques (PMR, allergies alimentaires, etc.)</label>
+          <textarea id="besoins_specifiques" name="besoins_specifiques" placeholder="ex : fauteuil roulant, végétarien, allergie aux arachides…"></textarea>
+        </div>
+
+        <!-- SECTION : DESTINATION & DATES -->
+        <div class="form-section-title">Destination &amp; dates</div>
+
+        <div class="form-full">
+          <label for="destination">Destination(s) souhaitée(s) <span>*</span></label>
+          <input type="text" id="destination" name="destination" placeholder="ex : Japon, Grèce (Santorin), ou laissez-vous surprendre !" required />
+        </div>
+
+        <div class="form-full">
+          <label>Type de dates <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="type_dates" value="precise" id="dates_precises" required /> 📅 Date précise</label>
+            <label><input type="radio" name="type_dates" value="flexible" id="dates_flexibles" /> 🌊 Flexible</label>
+          </div>
+
+          <!-- Dates précises : calendriers départ + retour -->
+          <div id="dates_precises_fields" class="date-conditional" style="display:none;">
+            <div class="date-row">
+              <div>
+                <label for="date_depart">Date de départ <span>*</span></label>
+                <input type="date" id="date_depart" name="date_depart" />
+              </div>
+              <div>
+                <label for="date_retour">Date de retour <span>*</span></label>
+                <input type="date" id="date_retour" name="date_retour" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Dates flexibles : cases à cocher mois -->
+          <div id="dates_flexibles_fields" class="date-conditional" style="display:none;">
+            <label style="margin-bottom:.5rem;">Mois envisagés <span>*</span></label>
+            <div class="months-group">
+              <label><input type="checkbox" name="mois[]" value="janvier" /> Janvier</label>
+              <label><input type="checkbox" name="mois[]" value="fevrier" /> Février</label>
+              <label><input type="checkbox" name="mois[]" value="mars" /> Mars</label>
+              <label><input type="checkbox" name="mois[]" value="avril" /> Avril</label>
+              <label><input type="checkbox" name="mois[]" value="mai" /> Mai</label>
+              <label><input type="checkbox" name="mois[]" value="juin" /> Juin</label>
+              <label><input type="checkbox" name="mois[]" value="juillet" /> Juillet</label>
+              <label><input type="checkbox" name="mois[]" value="aout" /> Août</label>
+              <label><input type="checkbox" name="mois[]" value="septembre" /> Septembre</label>
+              <label><input type="checkbox" name="mois[]" value="octobre" /> Octobre</label>
+              <label><input type="checkbox" name="mois[]" value="novembre" /> Novembre</label>
+              <label><input type="checkbox" name="mois[]" value="decembre" /> Décembre</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <label for="duree">Durée du voyage <span>*</span></label>
+          <input type="text" id="duree" name="duree" placeholder="ex : 10 jours, 2 semaines" required />
+        </div>
+
+        <!-- SECTION : BUDGET -->
+        <div class="form-section-title">Budget</div>
+
+        <div class="form-full">
+          <label for="budget_text">Budget global (par personne, vols inclus) <span>*</span></label>
+          <div class="budget-field">
+            <input type="text" id="budget_text" name="budget" placeholder="ex : 1 500 €, 3 000 € pour 2 personnes…" required />
+            <div class="budget-btns">
+              <button type="button" class="budget-btn" onclick="setBudget('Aucune idée')">🤷 Aucune idée</button>
+              <button type="button" class="budget-btn" onclick="setBudget('Budget illimité')">💎 Budget illimité</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-full">
+          <label for="budget_precision">Précisions sur le budget (facultatif)</label>
+          <input type="text" id="budget_precision" name="budget_precision" placeholder="ex : vols déjà réservés, budget hébergement limité à 100 €/nuit" />
+        </div>
+
+        <!-- SECTION : STYLE DE VOYAGE -->
+        <div class="form-section-title">Style &amp; envies</div>
+
+        <div class="form-full">
+          <label>Style de voyage préféré (plusieurs choix possibles) <span>*</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="style[]" value="culturel" /> 🏛️ Culturel</label>
+            <label><input type="checkbox" name="style[]" value="nature" /> 🌿 Nature &amp; randonnée</label>
+            <label><input type="checkbox" name="style[]" value="plage" /> 🏖️ Plage &amp; détente</label>
+            <label><input type="checkbox" name="style[]" value="gastronomie" /> 🍽️ Gastronomie</label>
+            <label><input type="checkbox" name="style[]" value="aventure" /> 🧗 Aventure &amp; sport</label>
+            <label><input type="checkbox" name="style[]" value="shopping" /> 🛍️ Shopping</label>
+            <label><input type="checkbox" name="style[]" value="bien_etre" /> 🧘 Bien-être &amp; spa</label>
+            <label><input type="checkbox" name="style[]" value="kids_friendly" /> 🎢 Activités enfants</label>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <label>Rythme de voyage préféré <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="rythme" value="tranquille" required /> 🐢 Tranquille (moins d'activités, reposant)</label>
+            <label><input type="radio" name="rythme" value="equilibre" /> ⚖️ Équilibré</label>
+            <label><input type="radio" name="rythme" value="intense" /> 🚀 Intense (maximum d'expériences)</label>
+          </div>
+        </div>
+
+        <!-- SECTION : HÉBERGEMENT -->
+        <div class="form-section-title">Hébergement</div>
+
+        <div class="form-full">
+          <label>Type d'hébergement préféré <span>*</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="hebergement[]" value="hotel" /> 🏨 Hôtel</label>
+            <label><input type="checkbox" name="hebergement[]" value="appart" /> 🏠 Appartement / Airbnb</label>
+            <label><input type="checkbox" name="hebergement[]" value="villa" /> 🏡 Villa</label>
+            <label><input type="checkbox" name="hebergement[]" value="charme" /> 💎 Boutique / Hôtel de charme</label>
+            <label><input type="checkbox" name="hebergement[]" value="insolite" /> 🌿 Insolite</label>
+            <label><input type="checkbox" name="hebergement[]" value="camping" /> ⛺ Camping / Glamping</label>
+            <label><input type="checkbox" name="hebergement[]" value="indifferent" /> 🤷 Peu importe</label>
+          </div>
+        </div>
+
+        <!-- SECTION : EXPÉRIENCES -->
+        <div class="form-section-title">Expériences &amp; préférences</div>
+
+        <div class="form-full">
+          <label for="voyage_ideal">Décris ton voyage idéal</label>
+          <textarea id="voyage_ideal" name="voyage_ideal" placeholder="Ex : une semaine à la mer avec des enfants, des plages peu fréquentées, des restos locaux le soir, et une journée d'aventure…"></textarea>
+        </div>
+        <div class="form-full">
+          <label for="incontournables">Activités / lieux incontournables pour vous</label>
+          <textarea id="incontournables" name="incontournables" placeholder="ex : voir le Mont Fuji, faire de la plongée, visiter des musées d'art moderne, goûter la street food locale…"></textarea>
+        </div>
+        <div class="form-full">
+          <label for="a_eviter">Ce que vous souhaitez éviter</label>
+          <textarea id="a_eviter" name="a_eviter" placeholder="ex : les endroits très touristiques, les transports de nuit, les longues marches, les visites guidées imposées…"></textarea>
+        </div>
+        <div class="form-full">
+          <label for="experiences_passees">Vos voyages préférés (pour nous inspirer)</label>
+          <textarea id="experiences_passees" name="experiences_passees" placeholder="ex : J'ai adoré le Maroc en 2022, notamment pour l'ambiance des souks et la cuisine. Je n'ai pas aimé l'Égypte car trop touristique."></textarea>
+        </div>
+
+        <!-- SECTION : INFOS COMPLÉMENTAIRES -->
+        <div class="form-section-title">Informations complémentaires</div>
+
+        <div class="form-full">
+          <label>Avez-vous déjà réservé quelque chose ?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="deja_reserve" value="rien" /> ❌ Rien du tout</label>
+            <label><input type="radio" name="deja_reserve" value="vols" /> ✈️ Les vols</label>
+            <label><input type="radio" name="deja_reserve" value="hebergement" /> 🏨 L'hébergement</label>
+            <label><input type="radio" name="deja_reserve" value="tout" /> ✅ Vols + hébergement</label>
+          </div>
+        </div>
+        <div>
+          <label for="pays_depart">Pays / ville de départ <span>*</span></label>
+          <input type="text" id="pays_depart" name="pays_depart" placeholder="ex : Paris, Lyon, Bruxelles" required />
+        </div>
+        <div class="form-full">
+          <label for="commentaires">Autres informations ou demandes particulières</label>
+          <textarea id="commentaires" name="commentaires" placeholder="Tout ce qui nous aiderait à vous offrir le voyage parfait…"></textarea>
+        </div>
+
+        <div class="form-full">
+          <label>
+            <input type="checkbox" name="consent" required />
+            J'accepte que mes données soient utilisées pour créer mon itinéraire personnalisé. <span>*</span>
+          </label>
+        </div>
+
+      </div><!-- /form-grid -->
+
+      <div class="submit-wrap">
+        <button type="submit">Envoyer mon questionnaire ✈️</button>
+        <p class="form-note">Vos réponses seront envoyées à notre équipe. Nous vous recontacterons dans les meilleurs délais.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="logo-foot">VoyagIA</span>
+  <p>Des voyages sur-mesure imaginés avec ❤️ et intelligence artificielle.</p>
+  <p style="margin-top:.5rem;">Contact : <a href="mailto:voyagia@hotmail.com">voyagia@hotmail.com</a></p>
+  <p style="margin-top:1rem; font-size:.8rem; color:#aaa;">© 2025 VoyagIA – Tous droits réservés</p>
+</footer>
+
+<script>
+  /* ── Age dropdowns ── */
+  function buildAgeSelect(name, id, minAge, maxAge) {
+    const sel = document.createElement('select');
+    sel.name = name;
+    sel.id = id;
+    sel.required = true;
+    const def = document.createElement('option');
+    def.value = ''; def.textContent = '-- Âge --';
+    sel.appendChild(def);
+    for (let age = minAge; age <= maxAge; age++) {
+      const opt = document.createElement('option');
+      opt.value = age;
+      if (age === 0) {
+        opt.textContent = '< 1 an';
+      } else {
+        opt.textContent = age + ' an' + (age > 1 ? 's' : '');
+      }
+      sel.appendChild(opt);
+    }
+    return sel;
+  }
+
+  function updateAdultAges() {
+    const nb = parseInt(document.getElementById('nb_adultes').value) || 0;
+    const container = document.getElementById('ages_adultes_container');
+    container.innerHTML = '';
+    if (nb <= 0) return;
+    const lbl = document.createElement('label');
+    lbl.textContent = 'Âge des adultes';
+    lbl.style.marginBottom = '.4rem';
+    container.appendChild(lbl);
+    const grid = document.createElement('div');
+    grid.className = 'age-dropdowns';
+    for (let i = 1; i <= nb; i++) {
+      const div = document.createElement('div');
+      const l = document.createElement('label');
+      l.setAttribute('for', 'age_adulte_' + i);
+      l.textContent = 'Adulte ' + i;
+      const sel = buildAgeSelect('age_adulte_' + i, 'age_adulte_' + i, 18, 99);
+      div.appendChild(l);
+      div.appendChild(sel);
+      grid.appendChild(div);
+    }
+    container.appendChild(grid);
+  }
+
+  function updateChildrenAges() {
+    const nb = parseInt(document.getElementById('nb_enfants').value) || 0;
+    const container = document.getElementById('ages_enfants_container');
+    container.innerHTML = '';
+    if (nb <= 0) return;
+    const lbl = document.createElement('label');
+    lbl.textContent = 'Âge des enfants';
+    lbl.style.marginBottom = '.4rem';
+    container.appendChild(lbl);
+    const grid = document.createElement('div');
+    grid.className = 'age-dropdowns';
+    for (let i = 1; i <= nb; i++) {
+      const div = document.createElement('div');
+      const l = document.createElement('label');
+      l.setAttribute('for', 'age_enfant_' + i);
+      l.textContent = 'Enfant ' + i;
+      const sel = buildAgeSelect('age_enfant_' + i, 'age_enfant_' + i, 0, 17);
+      div.appendChild(l);
+      div.appendChild(sel);
+      grid.appendChild(div);
+    }
+    container.appendChild(grid);
+  }
+
+  /* ── Date fields ── */
+  function toggleDateFields() {
+    const precise = document.getElementById('dates_precises').checked;
+    const flexible = document.getElementById('dates_flexibles').checked;
+    const preciseFields = document.getElementById('dates_precises_fields');
+    const flexibleFields = document.getElementById('dates_flexibles_fields');
+
+    preciseFields.style.display = precise ? '' : 'none';
+    flexibleFields.style.display = flexible ? '' : 'none';
+
+    // Toggle required on date inputs
+    document.getElementById('date_depart').required = precise;
+    document.getElementById('date_retour').required = precise;
+  }
+
+  /* ── Budget buttons ── */
+  function setBudget(value) {
+    const input = document.getElementById('budget_text');
+    input.value = value;
+    // Highlight active button
+    document.querySelectorAll('.budget-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.includes(value));
+    });
+  }
+
+  /* ── Init ── */
+  document.addEventListener('DOMContentLoaded', function () {
+    // Adult ages
+    updateAdultAges();
+    document.getElementById('nb_adultes').addEventListener('input', updateAdultAges);
+    document.getElementById('nb_adultes').addEventListener('change', updateAdultAges);
+
+    // Children ages
+    document.getElementById('nb_enfants').addEventListener('input', updateChildrenAges);
+    document.getElementById('nb_enfants').addEventListener('change', updateChildrenAges);
+
+    // Date type toggle
+    document.querySelectorAll('input[name="type_dates"]').forEach(function (r) {
+      r.addEventListener('change', toggleDateFields);
+    });
+
+    // Clear budget button highlight when user types manually
+    document.getElementById('budget_text').addEventListener('input', function () {
+      document.querySelectorAll('.budget-btn').forEach(btn => btn.classList.remove('active'));
+    });
+  });
+</script>
+
+</body>
+</html>
