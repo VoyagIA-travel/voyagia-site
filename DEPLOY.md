@@ -35,6 +35,45 @@ git push -u origin master
 
 ---
 
+### Option C — GitHub Actions (déploiement automatique via CI/CD) ✅
+
+Le fichier `.github/workflows/deploy.yml` est déjà présent dans le repo.
+Chaque `git push` sur `master` déclenche automatiquement un déploiement Netlify.
+
+**Configuration requise (une seule fois) :**
+
+1. Récupérer votre **Netlify Auth Token** :
+   - [app.netlify.com/user/applications](https://app.netlify.com/user/applications) → **Personal access tokens** → créer un token
+
+2. Récupérer votre **Netlify Site ID** :
+   - Tableau de bord Netlify → votre site → **Site configuration → General → Site ID**
+
+3. Ajouter les secrets dans GitHub :
+   - Repo GitHub → **Settings → Secrets and variables → Actions → New repository secret**
+   - Ajouter `NETLIFY_AUTH_TOKEN` et `NETLIFY_SITE_ID`
+
+Ensuite, chaque `git commit` + `git push` déploie automatiquement en production.
+
+---
+
+### Option D — Script de déploiement local (`deploy.sh`)
+
+Pour déployer manuellement depuis votre machine sans passer par GitHub :
+
+```bash
+# Installer Netlify CLI (une fois)
+npm install -g netlify-cli
+
+# Configurer les variables d'environnement
+export NETLIFY_AUTH_TOKEN="votre_token"   # app.netlify.com/user/applications
+export NETLIFY_SITE_ID="votre_site_id"    # Site settings > General > Site ID
+
+# Déployer
+./deploy.sh
+```
+
+---
+
 ## Configurer la réception des formulaires par email
 
 Le formulaire utilise **Netlify Forms** (gratuit, 100 soumissions/mois).
@@ -58,6 +97,11 @@ voyagia-site/
 ```
 
 ## Changelog
+
+### 2026-04-19 — Déploiement automatique CI/CD (VOYA-19)
+- **`.github/workflows/deploy.yml`** : GitHub Actions — déploiement Netlify automatique sur chaque push `master`
+- **`deploy.sh`** : script de déploiement manuel via Netlify CLI
+- **`DEPLOY.md`** : ajout Options C et D avec guide de configuration
 
 ### 2026-04-18 — Correction bug formulaire 404 (VOYA-16)
 - **netlify.toml** : suppression du redirect catch-all `/* → /index.html` avec `status = 404` qui interceptait la redirection vers `merci.html` après soumission du formulaire
