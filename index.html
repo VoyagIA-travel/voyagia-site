@@ -3,23 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VoyagIA – Votre voyage sur-mesure, imaginé par l'IA</title>
-  <meta name="description" content="VoyagIA crée des itinéraires de voyage personnalisés pour toute la famille grâce à l'intelligence artificielle." />
+  <title>VoyagIA – Votre voyage sur-mesure, conçu rien que pour vous</title>
+  <meta name="description" content="VoyagIA crée des itinéraires de voyage personnalisés pour toute la famille grâce à votre conseiller voyage personnel." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --sand:    #f5efe6;
-      --cream:   #fffdf9;
-      --sky:     #4db8d4;
-      --sky-dark:#2e9ab5;
-      --coral:   #f4845f;
-      --coral-dark:#d96843;
-      --text:    #2c2c2c;
-      --muted:   #6b6b6b;
-      --radius:  14px;
+      --sand:       #f0f5f1;
+      --cream:      #f8fdf9;
+      --green:      #7fba8a;
+      --green-dark: #5a9b6a;
+      --green-deep: #3d7a4d;
+      --gold:       #c8a96e;
+      --gold-dark:  #a88a50;
+      --text:       #2c2c2c;
+      --muted:      #6b6b6b;
+      --radius:     14px;
     }
 
     html { scroll-behavior: smooth; }
@@ -34,31 +35,26 @@
     /* ── NAV ── */
     nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(255,253,249,.92);
+      background: rgba(248,253,249,.95);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid #efe9df;
+      border-bottom: 1px solid #d8ead9;
       padding: .9rem 2rem;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.55rem;
-      color: var(--sky-dark);
-      text-decoration: none;
-    }
-    .logo span { color: var(--coral); }
+    .logo-img-link { display: flex; align-items: center; text-decoration: none; }
+    .logo-img { height: 48px; width: auto; display: block; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
       text-decoration: none; color: var(--muted); font-weight: 600;
       transition: color .2s;
     }
-    .nav-links a:hover { color: var(--sky-dark); }
+    .nav-links a:hover { color: var(--green-dark); }
     .nav-cta {
-      background: var(--coral); color: #fff !important;
+      background: var(--green); color: #fff !important;
       padding: .45rem 1.2rem; border-radius: 50px;
       transition: background .2s !important;
     }
-    .nav-cta:hover { background: var(--coral-dark) !important; color: #fff !important; }
+    .nav-cta:hover { background: var(--green-dark) !important; color: #fff !important; }
 
     /* ── HERO ── */
     .hero {
@@ -67,14 +63,22 @@
       text-align: center;
       padding: 5rem 1.5rem 4rem;
       background:
-        radial-gradient(ellipse at 70% 10%, rgba(77,184,212,.15) 0%, transparent 55%),
-        radial-gradient(ellipse at 20% 80%, rgba(244,132,95,.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 10%, rgba(127,186,138,.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(200,169,110,.12) 0%, transparent 50%),
         var(--sand);
+    }
+    .hero-logo {
+      margin-bottom: 2rem;
+    }
+    .hero-logo img {
+      height: 90px;
+      width: auto;
+      filter: drop-shadow(0 4px 12px rgba(90,155,106,.2));
     }
     .hero-badge {
       display: inline-block;
-      background: rgba(77,184,212,.15);
-      color: var(--sky-dark);
+      background: rgba(127,186,138,.18);
+      color: var(--green-dark);
       font-size: .85rem; font-weight: 700;
       padding: .35rem 1rem; border-radius: 50px;
       margin-bottom: 1.5rem;
@@ -87,7 +91,7 @@
       max-width: 750px;
       margin-bottom: 1.2rem;
     }
-    .hero h1 em { color: var(--sky-dark); font-style: normal; }
+    .hero h1 em { color: var(--green-dark); font-style: normal; }
     .hero p {
       font-size: clamp(1rem, 2vw, 1.2rem);
       color: var(--muted);
@@ -96,14 +100,14 @@
     }
     .btn-primary {
       display: inline-block;
-      background: var(--coral); color: #fff;
+      background: var(--green); color: #fff;
       padding: .85rem 2.2rem; border-radius: 50px;
       font-size: 1.05rem; font-weight: 700;
       text-decoration: none;
-      box-shadow: 0 6px 20px rgba(244,132,95,.35);
+      box-shadow: 0 6px 20px rgba(127,186,138,.4);
       transition: transform .18s, box-shadow .18s;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(244,132,95,.45); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(127,186,138,.5); }
 
     .hero-illustration {
       margin-top: 4rem;
@@ -125,7 +129,7 @@
     .section-label {
       display: inline-block;
       font-size: .8rem; font-weight: 800; letter-spacing: .1em;
-      text-transform: uppercase; color: var(--coral);
+      text-transform: uppercase; color: var(--green-deep);
       margin-bottom: .6rem;
     }
     h2 {
@@ -156,7 +160,7 @@
     }
     .step-num {
       width: 2.4rem; height: 2.4rem;
-      background: var(--sky); color: #fff;
+      background: var(--green); color: #fff;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-weight: 800; font-size: .95rem;
@@ -187,7 +191,7 @@
       background: var(--sand); border-radius: 10px; padding: .9rem 1rem;
     }
     .day-num {
-      background: var(--sky); color: #fff;
+      background: var(--green); color: #fff;
       border-radius: 8px; padding: .2rem .6rem;
       font-size: .8rem; font-weight: 800; white-space: nowrap; flex-shrink: 0;
     }
@@ -196,8 +200,8 @@
     .livrable-note {
       margin-top: 1.5rem;
       padding: 1rem 1.2rem;
-      background: rgba(77,184,212,.1);
-      border-left: 4px solid var(--sky);
+      background: rgba(127,186,138,.12);
+      border-left: 4px solid var(--green);
       border-radius: 0 8px 8px 0;
       font-size: .9rem; color: var(--muted);
     }
@@ -216,7 +220,7 @@
     .form-full { grid-column: 1 / -1; }
 
     label { display: block; font-weight: 700; font-size: .9rem; margin-bottom: .35rem; }
-    label span { color: var(--coral); }
+    label span { color: var(--green-dark); }
 
     input[type=text], input[type=email], input[type=number], input[type=date],
     select, textarea {
@@ -229,15 +233,15 @@
       transition: border-color .2s;
       outline: none;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--sky); }
+    input:focus, select:focus, textarea:focus { border-color: var(--green); }
     textarea { resize: vertical; min-height: 90px; }
 
     .form-section-title {
       grid-column: 1 / -1;
       font-size: .75rem; font-weight: 800; letter-spacing: .1em;
-      text-transform: uppercase; color: var(--sky-dark);
+      text-transform: uppercase; color: var(--green-dark);
       padding-bottom: .4rem;
-      border-bottom: 1px solid #e8e1d6;
+      border-bottom: 1px solid #cfe2d0;
       margin-top: .5rem;
     }
 
@@ -250,8 +254,8 @@
       cursor: pointer; font-size: .9rem;
       border: 1.5px solid transparent; transition: border-color .15s;
     }
-    .checkbox-group label:has(input:checked) { border-color: var(--sky); background: rgba(77,184,212,.1); }
-    .checkbox-group input { accent-color: var(--sky); }
+    .checkbox-group label:has(input:checked) { border-color: var(--green); background: rgba(127,186,138,.12); }
+    .checkbox-group input { accent-color: var(--green); }
 
     .radio-group { display: flex; flex-wrap: wrap; gap: .5rem; }
     .radio-group label {
@@ -260,8 +264,8 @@
       cursor: pointer; font-size: .9rem;
       border: 1.5px solid transparent; transition: border-color .15s;
     }
-    .radio-group label:has(input:checked) { border-color: var(--coral); background: rgba(244,132,95,.08); }
-    .radio-group input { accent-color: var(--coral); }
+    .radio-group label:has(input:checked) { border-color: var(--green); background: rgba(127,186,138,.12); }
+    .radio-group input { accent-color: var(--green); }
 
     /* ── AGE DROPDOWNS ── */
     .age-dropdowns {
@@ -295,8 +299,8 @@
       cursor: pointer; font-size: .9rem;
       border: 1.5px solid transparent; transition: border-color .15s;
     }
-    .months-group label:has(input:checked) { border-color: var(--sky); background: rgba(77,184,212,.1); }
-    .months-group input { accent-color: var(--sky); }
+    .months-group label:has(input:checked) { border-color: var(--green); background: rgba(127,186,138,.12); }
+    .months-group input { accent-color: var(--green); }
 
     /* ── BUDGET FIELD ── */
     .budget-field { display: flex; flex-direction: column; gap: .6rem; }
@@ -313,20 +317,20 @@
       transition: border-color .15s, background .15s;
       color: var(--text);
     }
-    .budget-btn:hover { border-color: var(--sky); background: rgba(77,184,212,.1); }
-    .budget-btn.active { border-color: var(--sky); background: rgba(77,184,212,.1); }
+    .budget-btn:hover { border-color: var(--green); background: rgba(127,186,138,.12); }
+    .budget-btn.active { border-color: var(--green); background: rgba(127,186,138,.12); }
 
     .submit-wrap { margin-top: 1.5rem; text-align: center; }
     button[type=submit] {
-      background: var(--coral); color: #fff;
+      background: var(--green); color: #fff;
       border: none; border-radius: 50px;
       padding: .9rem 2.8rem; font-family: inherit;
       font-size: 1.05rem; font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(244,132,95,.35);
+      box-shadow: 0 6px 20px rgba(127,186,138,.4);
       transition: transform .18s, box-shadow .18s;
     }
-    button[type=submit]:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(244,132,95,.45); }
+    button[type=submit]:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(127,186,138,.5); }
     .form-note { color: var(--muted); font-size: .82rem; margin-top: .6rem; }
 
     /* ── FOOTER ── */
@@ -335,11 +339,11 @@
       background: var(--sand);
       color: var(--muted); font-size: .9rem;
     }
-    footer a { color: var(--sky-dark); text-decoration: none; }
+    footer a { color: var(--green-dark); text-decoration: none; }
     footer .logo-foot {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem; color: var(--sky-dark); display: block; margin-bottom: .4rem;
+      display: block; margin-bottom: .8rem;
     }
+    footer .logo-foot img { height: 44px; width: auto; }
 
     /* ── TESTIMONIALS ── */
     #avis { background: var(--cream); }
@@ -361,8 +365,8 @@
       transform: translateY(-4px);
       box-shadow: 0 10px 32px rgba(0,0,0,.1);
     }
-    .testimonial-card:nth-child(2) { border-top-color: rgba(77,184,212,.4); }
-    .testimonial-card:nth-child(3) { border-top-color: rgba(244,132,95,.35); }
+    .testimonial-card:nth-child(2) { border-top-color: rgba(127,186,138,.5); }
+    .testimonial-card:nth-child(3) { border-top-color: rgba(90,155,106,.4); }
     .testimonial-stars { font-size: 1.1rem; margin-bottom: .8rem; letter-spacing: .05em; }
     .testimonial-quote {
       font-size: .97rem;
@@ -403,7 +407,7 @@
     .stat-num {
       font-family: 'Playfair Display', serif;
       font-size: 2.2rem;
-      color: var(--sky-dark);
+      color: var(--green-dark);
       line-height: 1;
     }
     .stat-label { font-size: .85rem; color: var(--muted); margin-top: .3rem; font-weight: 600; }
@@ -418,7 +422,9 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo">Voyag<span>IA</span></a>
+  <a href="#" class="logo-img-link">
+    <img src="logo.png" alt="VoyagIA" class="logo-img" />
+  </a>
   <ul class="nav-links">
     <li><a href="#services">Comment ça marche</a></li>
     <li><a href="#exemple">Exemple</a></li>
@@ -429,7 +435,10 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">✨ Powered by AI &amp; passion du voyage</div>
+  <div class="hero-logo">
+    <img src="logo.png" alt="VoyagIA" />
+  </div>
+  <div class="hero-badge">✨ Conçu avec passion &amp; expertise voyage</div>
   <h1>Votre voyage <em>sur-mesure</em>,<br/>imaginé pour toute la famille</h1>
   <p>Répondez à notre questionnaire, et VoyagIA compose pour vous un itinéraire personnalisé, adapté à vos envies, votre budget et votre rythme.</p>
   <a href="#questionnaire" class="btn-primary">Créer mon itinéraire →</a>
@@ -456,8 +465,8 @@
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <h3>Notre IA analyse vos envies</h3>
-        <p>VoyagIA croise vos préférences avec les meilleures options disponibles pour composer votre voyage idéal.</p>
+        <h3>Votre conseiller analyse vos envies</h3>
+        <p>Votre expert voyage dédié croise vos préférences avec les meilleures options disponibles pour composer votre voyage idéal.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
@@ -837,8 +846,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <span class="logo-foot">VoyagIA</span>
-  <p>Des voyages sur-mesure imaginés avec ❤️ et intelligence artificielle.</p>
+  <span class="logo-foot"><img src="logo.png" alt="VoyagIA" /></span>
+  <p>Des voyages sur-mesure imaginés avec ❤️ et passion du voyage.</p>
   <p style="margin-top:.5rem;">Contact : <a href="mailto:voyagia@hotmail.com">voyagia@hotmail.com</a></p>
   <p style="margin-top:1rem; font-size:.8rem; color:#aaa;">© 2025 VoyagIA – Tous droits réservés</p>
 </footer>
