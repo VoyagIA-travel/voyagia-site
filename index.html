@@ -42,7 +42,7 @@
       display: flex; align-items: center; justify-content: space-between;
     }
     .logo-img-link { display: flex; align-items: center; text-decoration: none; }
-    .logo-img { height: 48px; width: auto; display: block; }
+    .logo-img { height: 48px; width: 48px; display: block; border-radius: 50%; object-fit: cover; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
       text-decoration: none; color: var(--muted); font-weight: 600;
@@ -71,9 +71,11 @@
       margin-bottom: 2rem;
     }
     .hero-logo img {
-      height: 90px;
-      width: auto;
-      filter: drop-shadow(0 4px 12px rgba(90,155,106,.2));
+      height: 110px;
+      width: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 6px 24px rgba(90,155,106,.25);
     }
     .hero-badge {
       display: inline-block;
@@ -343,7 +345,7 @@
     footer .logo-foot {
       display: block; margin-bottom: .8rem;
     }
-    footer .logo-foot img { height: 44px; width: auto; }
+    footer .logo-foot img { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; }
 
     /* ── TESTIMONIALS ── */
     #avis { background: var(--cream); }
@@ -412,6 +414,169 @@
     }
     .stat-label { font-size: .85rem; color: var(--muted); margin-top: .3rem; font-weight: 600; }
 
+    /* ── MA VALISE ── */
+    #valise { background: var(--sand); }
+
+    .valise-progress-wrap {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      padding: 1.4rem 1.8rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .valise-progress-label {
+      font-weight: 700;
+      font-size: .95rem;
+      white-space: nowrap;
+      color: var(--text);
+      min-width: 200px;
+    }
+    .valise-progress-bar-track {
+      flex: 1;
+      min-width: 120px;
+      height: 11px;
+      background: var(--sand);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+    .valise-progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--green-dark));
+      border-radius: 50px;
+      transition: width .45s ease;
+      width: 0%;
+    }
+    .valise-progress-pct {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--green-dark);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .valise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.4rem;
+    }
+    .valise-category {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+    }
+    .valise-category-header {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      margin-bottom: .15rem;
+    }
+    .valise-category-icon { font-size: 1.35rem; line-height: 1; }
+    .valise-category-title { font-weight: 800; font-size: 1rem; color: var(--text); }
+
+    .valise-items { display: flex; flex-direction: column; gap: .45rem; }
+    .valise-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .42rem .7rem;
+      border-radius: 8px;
+      background: var(--sand);
+      transition: background .15s;
+    }
+    .valise-item:has(input:checked) { background: rgba(127,186,138,.14); }
+    .valise-item input[type=checkbox] {
+      accent-color: var(--green);
+      width: 1rem; height: 1rem;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .valise-item-label {
+      font-size: .92rem;
+      font-weight: 600;
+      flex: 1;
+      cursor: pointer;
+      user-select: none;
+      line-height: 1.4;
+    }
+    .valise-item:has(input:checked) .valise-item-label {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .valise-item-del {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .8rem;
+      padding: 0 .15rem;
+      opacity: 0;
+      transition: opacity .15s;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .valise-item:hover .valise-item-del { opacity: 1; }
+
+    .valise-add-row {
+      display: flex;
+      gap: .45rem;
+      margin-top: .1rem;
+    }
+    .valise-add-input {
+      flex: 1;
+      padding: .48rem .8rem;
+      border: 1.5px solid #e0d9cf;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .88rem;
+      color: var(--text);
+      background: var(--cream);
+      transition: border-color .2s;
+      outline: none;
+    }
+    .valise-add-input:focus { border-color: var(--green); }
+    .valise-add-input::placeholder { color: #b0a89a; }
+    .valise-add-btn {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: .48rem .9rem;
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .valise-add-btn:hover { background: var(--green-dark); }
+
+    .valise-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.2rem;
+    }
+    .valise-reset-btn {
+      background: none;
+      border: 1.5px solid #d5ccc2;
+      border-radius: 50px;
+      padding: .45rem 1.2rem;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .valise-reset-btn:hover { border-color: var(--green); color: var(--green-dark); }
+
     /* ── RESPONSIVE NAV ── */
     @media (max-width: 640px) {
       .nav-links { display: none; }
@@ -429,6 +594,7 @@
     <li><a href="#services">Comment ça marche</a></li>
     <li><a href="#exemple">Exemple</a></li>
     <li><a href="#avis">Avis</a></li>
+    <li><a href="#valise">Ma valise</a></li>
     <li><a href="#questionnaire" class="nav-cta">Commencer</a></li>
   </ul>
 </nav>
@@ -525,6 +691,101 @@
       <div class="livrable-note">
         💡 <strong>Le livrable complet</strong> inclut : planning heure par heure, liens de réservation, carte interactive, conseils santé &amp; sécurité, budget prévisionnel détaillé, et alternatives météo.
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- MA VALISE -->
+<section id="valise">
+  <div class="container">
+    <span class="section-label">Ma valise</span>
+    <h2>Prêt(e) à partir ? Cochez votre liste ✈️</h2>
+    <p class="sub">Votre liste de voyage interactive, sauvegardée automatiquement dans votre navigateur. Ajoutez vos propres items dans chaque catégorie.</p>
+
+    <div class="valise-progress-wrap">
+      <div class="valise-progress-label" id="valise-progress-label">0/30 items prêts — 0%</div>
+      <div class="valise-progress-bar-track">
+        <div class="valise-progress-bar-fill" id="valise-progress-fill"></div>
+      </div>
+      <div class="valise-progress-pct" id="valise-progress-pct">0%</div>
+    </div>
+
+    <div class="valise-grid">
+      <div class="valise-category" id="valise-cat-tech">
+        <div class="valise-category-header">
+          <span class="valise-category-icon">🔌</span>
+          <span class="valise-category-title">Tech</span>
+        </div>
+        <div class="valise-items"></div>
+        <div class="valise-add-row">
+          <input type="text" class="valise-add-input" placeholder="Ajouter un item…" />
+          <button class="valise-add-btn">+ Ajouter</button>
+        </div>
+      </div>
+
+      <div class="valise-category" id="valise-cat-sante">
+        <div class="valise-category-header">
+          <span class="valise-category-icon">💊</span>
+          <span class="valise-category-title">Santé</span>
+        </div>
+        <div class="valise-items"></div>
+        <div class="valise-add-row">
+          <input type="text" class="valise-add-input" placeholder="Ajouter un item…" />
+          <button class="valise-add-btn">+ Ajouter</button>
+        </div>
+      </div>
+
+      <div class="valise-category" id="valise-cat-vetements">
+        <div class="valise-category-header">
+          <span class="valise-category-icon">👕</span>
+          <span class="valise-category-title">Vêtements</span>
+        </div>
+        <div class="valise-items"></div>
+        <div class="valise-add-row">
+          <input type="text" class="valise-add-input" placeholder="Ajouter un item…" />
+          <button class="valise-add-btn">+ Ajouter</button>
+        </div>
+      </div>
+
+      <div class="valise-category" id="valise-cat-bebe">
+        <div class="valise-category-header">
+          <span class="valise-category-icon">🍼</span>
+          <span class="valise-category-title">Bébé</span>
+        </div>
+        <div class="valise-items"></div>
+        <div class="valise-add-row">
+          <input type="text" class="valise-add-input" placeholder="Ajouter un item…" />
+          <button class="valise-add-btn">+ Ajouter</button>
+        </div>
+      </div>
+
+      <div class="valise-category" id="valise-cat-documents">
+        <div class="valise-category-header">
+          <span class="valise-category-icon">📄</span>
+          <span class="valise-category-title">Documents</span>
+        </div>
+        <div class="valise-items"></div>
+        <div class="valise-add-row">
+          <input type="text" class="valise-add-input" placeholder="Ajouter un item…" />
+          <button class="valise-add-btn">+ Ajouter</button>
+        </div>
+      </div>
+
+      <div class="valise-category" id="valise-cat-divers">
+        <div class="valise-category-header">
+          <span class="valise-category-icon">🎒</span>
+          <span class="valise-category-title">Divers</span>
+        </div>
+        <div class="valise-items"></div>
+        <div class="valise-add-row">
+          <input type="text" class="valise-add-input" placeholder="Ajouter un item…" />
+          <button class="valise-add-btn">+ Ajouter</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="valise-footer">
+      <button class="valise-reset-btn" id="valise-reset-btn">↺ Réinitialiser la liste</button>
     </div>
   </div>
 </section>
@@ -953,6 +1214,191 @@
       btn.classList.toggle('active', btn.textContent.includes(value));
     });
   }
+
+  /* ── Ma Valise ── */
+  (function () {
+    var LS_KEY = 'voyagia_valise_v1';
+
+    var CATEGORIES = [
+      { id: 'tech', defaults: ['Chargeur téléphone', 'Adaptateur secteur universel', 'Batterie externe', 'Casque / écouteurs', 'Câble USB / chargeur laptop'] },
+      { id: 'sante', defaults: ['Médicaments essentiels', 'Crème solaire (SPF 50+)', 'Anti-moustiques', 'Trousse premiers secours', 'Ordonnances médicales'] },
+      { id: 'vetements', defaults: ['Vêtements de jour (x5)', 'Tenue de soirée', 'Sous-vêtements', 'Veste / pull chaud', 'Chaussures de marche'] },
+      { id: 'bebe', defaults: ['Couches', 'Biberon / tétine', 'Crème bébé', 'Doudou / jouet', 'Vêtements de rechange (x3)'] },
+      { id: 'documents', defaults: ['Passeport / carte d\'identité', 'Billets d\'avion imprimés', 'Réservations hôtel', 'Assurance voyage', 'Carnet de vaccination'] },
+      { id: 'divers', defaults: ['Monnaie locale / carte bancaire', 'Guide de voyage', 'Lunettes de soleil', 'Parapluie pliant', 'Sac à dos léger'] },
+    ];
+
+    function loadState() {
+      try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+      catch (e) { return {}; }
+    }
+
+    function saveState(state) {
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+    }
+
+    function getChecked(state, catId, key) {
+      return !!(state[catId] && state[catId].checked && state[catId].checked[key]);
+    }
+
+    function setChecked(state, catId, key, val) {
+      if (!state[catId]) state[catId] = { checked: {}, custom: [] };
+      state[catId].checked[key] = val;
+    }
+
+    function getCustomItems(state, catId) {
+      return (state[catId] && state[catId].custom) ? state[catId].custom : [];
+    }
+
+    function addCustomItem(state, catId, label) {
+      if (!state[catId]) state[catId] = { checked: {}, custom: [] };
+      if (!state[catId].custom) state[catId].custom = [];
+      var id = 'c' + Date.now() + Math.random().toString(36).slice(2, 5);
+      state[catId].custom.push({ id: id, label: label, checked: false });
+    }
+
+    function removeCustomItem(state, catId, itemId) {
+      if (!state[catId] || !state[catId].custom) return;
+      state[catId].custom = state[catId].custom.filter(function (i) { return i.id !== itemId; });
+    }
+
+    function countTotals(state) {
+      var total = 0, checked = 0;
+      CATEGORIES.forEach(function (cat) {
+        total += cat.defaults.length;
+        cat.defaults.forEach(function (label) {
+          if (getChecked(state, cat.id, 'd_' + label)) checked++;
+        });
+        var customs = getCustomItems(state, cat.id);
+        total += customs.length;
+        customs.forEach(function (item) { if (item.checked) checked++; });
+      });
+      return { total: total, checked: checked };
+    }
+
+    function updateProgress(state) {
+      var counts = countTotals(state);
+      var pct = counts.total > 0 ? Math.round(counts.checked / counts.total * 100) : 0;
+      var fill = document.getElementById('valise-progress-fill');
+      var lbl = document.getElementById('valise-progress-label');
+      var pctEl = document.getElementById('valise-progress-pct');
+      if (fill) fill.style.width = pct + '%';
+      if (lbl) lbl.textContent = counts.checked + '/' + counts.total + ' items prêts — ' + pct + '%';
+      if (pctEl) pctEl.textContent = pct + '%';
+    }
+
+    function renderCategory(cat, state) {
+      var section = document.getElementById('valise-cat-' + cat.id);
+      if (!section) return;
+      var container = section.querySelector('.valise-items');
+      container.innerHTML = '';
+
+      cat.defaults.forEach(function (label) {
+        var key = 'd_' + label;
+        var isChecked = getChecked(state, cat.id, key);
+        var item = document.createElement('div');
+        item.className = 'valise-item';
+        var cbId = 'vi_' + cat.id + '_' + key.replace(/\s+/g, '_');
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.id = cbId;
+        cb.checked = isChecked;
+        var lbl = document.createElement('label');
+        lbl.className = 'valise-item-label';
+        lbl.setAttribute('for', cbId);
+        lbl.textContent = label;
+        cb.addEventListener('change', function () {
+          var s = loadState();
+          setChecked(s, cat.id, key, cb.checked);
+          saveState(s);
+          updateProgress(s);
+        });
+        item.appendChild(cb);
+        item.appendChild(lbl);
+        container.appendChild(item);
+      });
+
+      getCustomItems(state, cat.id).forEach(function (custom) {
+        var item = document.createElement('div');
+        item.className = 'valise-item';
+        var cbId = 'vi_' + cat.id + '_' + custom.id;
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.id = cbId;
+        cb.checked = !!custom.checked;
+        var lbl = document.createElement('label');
+        lbl.className = 'valise-item-label';
+        lbl.setAttribute('for', cbId);
+        lbl.textContent = custom.label;
+        var del = document.createElement('button');
+        del.className = 'valise-item-del';
+        del.type = 'button';
+        del.title = 'Supprimer';
+        del.textContent = '✕';
+        cb.addEventListener('change', function () {
+          var s = loadState();
+          var c = getCustomItems(s, cat.id).find(function (i) { return i.id === custom.id; });
+          if (c) c.checked = cb.checked;
+          saveState(s);
+          updateProgress(s);
+        });
+        del.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var s = loadState();
+          removeCustomItem(s, cat.id, custom.id);
+          saveState(s);
+          renderCategory(cat, s);
+          updateProgress(s);
+        });
+        item.appendChild(cb);
+        item.appendChild(lbl);
+        item.appendChild(del);
+        container.appendChild(item);
+      });
+    }
+
+    function initValise() {
+      var state = loadState();
+      CATEGORIES.forEach(function (cat) { renderCategory(cat, state); });
+      updateProgress(state);
+
+      CATEGORIES.forEach(function (cat) {
+        var section = document.getElementById('valise-cat-' + cat.id);
+        if (!section) return;
+        var input = section.querySelector('.valise-add-input');
+        var btn = section.querySelector('.valise-add-btn');
+        function addItem() {
+          var label = input.value.trim();
+          if (!label) return;
+          var s = loadState();
+          addCustomItem(s, cat.id, label);
+          saveState(s);
+          renderCategory(cat, s);
+          updateProgress(s);
+          input.value = '';
+          input.focus();
+        }
+        btn.addEventListener('click', addItem);
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); addItem(); }
+        });
+      });
+
+      var resetBtn = document.getElementById('valise-reset-btn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          if (confirm('Réinitialiser toute la liste ? Les cases seront décochées et les items personnalisés supprimés.')) {
+            localStorage.removeItem(LS_KEY);
+            var s = loadState();
+            CATEGORIES.forEach(function (cat) { renderCategory(cat, s); });
+            updateProgress(s);
+          }
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initValise);
+  })();
 
   /* ── Init ── */
   document.addEventListener('DOMContentLoaded', function () {
