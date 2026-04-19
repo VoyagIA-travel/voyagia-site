@@ -721,7 +721,7 @@
           </div>
         </div>
 
-        <div class="form-full">
+        <div class="form-full" id="duree_wrapper">
           <label for="duree">Durée du voyage <span>*</span></label>
           <input type="text" id="duree" name="duree" placeholder="ex : 10 jours, 2 semaines" required />
         </div>
@@ -790,20 +790,20 @@
         <div class="form-section-title">Expériences &amp; préférences</div>
 
         <div class="form-full">
-          <label for="voyage_ideal">Décris ton voyage idéal</label>
-          <textarea id="voyage_ideal" name="voyage_ideal" placeholder="Ex : une semaine à la mer avec des enfants, des plages peu fréquentées, des restos locaux le soir, et une journée d'aventure…"></textarea>
+          <label for="voyage_ideal">Décris ton voyage idéal <span>*</span></label>
+          <textarea id="voyage_ideal" name="voyage_ideal" placeholder="Ex : une semaine à la mer avec des enfants, des plages peu fréquentées, des restos locaux le soir, et une journée d'aventure…" required></textarea>
         </div>
         <div class="form-full">
-          <label for="incontournables">Activités / lieux incontournables pour vous</label>
-          <textarea id="incontournables" name="incontournables" placeholder="ex : voir le Mont Fuji, faire de la plongée, visiter des musées d'art moderne, goûter la street food locale…"></textarea>
+          <label for="incontournables">Activités / lieux incontournables pour vous <span>*</span></label>
+          <textarea id="incontournables" name="incontournables" placeholder="ex : voir le Mont Fuji, faire de la plongée, visiter des musées d'art moderne, goûter la street food locale…" required></textarea>
         </div>
         <div class="form-full">
-          <label for="a_eviter">Ce que vous souhaitez éviter</label>
-          <textarea id="a_eviter" name="a_eviter" placeholder="ex : les endroits très touristiques, les transports de nuit, les longues marches, les visites guidées imposées…"></textarea>
+          <label for="a_eviter">Ce que vous souhaitez éviter <span>*</span></label>
+          <textarea id="a_eviter" name="a_eviter" placeholder="ex : les endroits très touristiques, les transports de nuit, les longues marches, les visites guidées imposées…" required></textarea>
         </div>
         <div class="form-full">
-          <label for="experiences_passees">Vos voyages préférés (pour nous inspirer)</label>
-          <textarea id="experiences_passees" name="experiences_passees" placeholder="ex : J'ai adoré le Maroc en 2022, notamment pour l'ambiance des souks et la cuisine. Je n'ai pas aimé l'Égypte car trop touristique."></textarea>
+          <label for="experiences_passees">Vos voyages préférés (pour nous inspirer) <span>*</span></label>
+          <textarea id="experiences_passees" name="experiences_passees" placeholder="ex : J'ai adoré le Maroc en 2022, notamment pour l'ambiance des souks et la cuisine. Je n'ai pas aimé l'Égypte car trop touristique." required></textarea>
         </div>
 
         <!-- SECTION : INFOS COMPLÉMENTAIRES -->
@@ -929,6 +929,8 @@
     const flexible = document.getElementById('dates_flexibles').checked;
     const preciseFields = document.getElementById('dates_precises_fields');
     const flexibleFields = document.getElementById('dates_flexibles_fields');
+    const dureeWrapper = document.getElementById('duree_wrapper');
+    const dureeInput = document.getElementById('duree');
 
     preciseFields.style.display = precise ? '' : 'none';
     flexibleFields.style.display = flexible ? '' : 'none';
@@ -936,6 +938,10 @@
     // Toggle required on date inputs
     document.getElementById('date_depart').required = precise;
     document.getElementById('date_retour').required = precise;
+
+    // Hide durée when dates are precise (auto-calculated from depart+retour)
+    dureeWrapper.style.display = precise ? 'none' : '';
+    dureeInput.required = !precise;
   }
 
   /* ── Budget buttons ── */
