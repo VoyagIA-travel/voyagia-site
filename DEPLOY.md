@@ -107,6 +107,14 @@ voyagia-site/
 - **netlify.toml** : suppression du redirect catch-all `/* → /index.html` avec `status = 404` qui interceptait la redirection vers `merci.html` après soumission du formulaire
 - Le formulaire redirige maintenant correctement vers `/merci.html` sur Netlify
 
+### 2026-04-24 — Amélioration questionnaire v2 (VOYA-15)
+- **Type de séjour** : nouveau choix logement fixe vs itinérant — si itinérant, affichage conditionnel des dropdowns min/max logements
+- **Nombre de chambres minimum** : dropdown 1 / 2 / 3 / 4+ dans la section Hébergement
+- **Refonte "Vos attentes"** : remplacement de "Voyage idéal" par une section structurée — attentes principales (checkboxes), incontournables, choses à éviter, contraintes particulières
+- **Section "Préférences pratiques"** : niveau de marche, sensibilité chaleur/froid, environnement préféré, piscine, Wi-Fi, véhicule de location, visites guidées, fréquentation touristique, restrictions alimentaires
+- **Champs obligatoires** : quasi toutes les questions désormais requises
+- **Ajouts bonus** : fréquentation touristique, restrictions alimentaires, préférence visites guidées
+
 ### 2026-04-18 — Amélioration questionnaire (VOYA-15)
 - **Âges des voyageurs** : dropdowns dynamiques par adulte (18–99 ans) et par enfant (0–17 ans), générés en JS au changement du compteur
 - **Dates** : nouveau sélecteur "Date précise / Flexible" — calendriers départ+retour si précise, cases à cocher par mois si flexible
