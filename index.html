@@ -42,7 +42,13 @@
       display: flex; align-items: center; justify-content: space-between;
     }
     .logo-img-link { display: flex; align-items: center; text-decoration: none; }
-    .logo-img { height: 48px; width: 48px; display: block; border-radius: 50%; object-fit: cover; }
+    .logo-img {
+      height: 48px; width: 48px; display: block;
+      border-radius: 50%; object-fit: cover;
+      background: #fff;
+      padding: 3px;
+      box-shadow: 0 0 0 2px var(--green), 0 2px 8px rgba(90,155,106,.18);
+    }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
       text-decoration: none; color: var(--muted); font-weight: 600;
@@ -71,11 +77,13 @@
       margin-bottom: 2rem;
     }
     .hero-logo img {
-      height: 110px;
-      width: 110px;
+      height: 120px;
+      width: 120px;
       border-radius: 50%;
       object-fit: cover;
-      box-shadow: 0 6px 24px rgba(90,155,106,.25);
+      background: #fff;
+      padding: 5px;
+      box-shadow: 0 0 0 3px var(--green), 0 8px 30px rgba(90,155,106,.3);
     }
     .hero-badge {
       display: inline-block;
@@ -345,7 +353,13 @@
     footer .logo-foot {
       display: block; margin-bottom: .8rem;
     }
-    footer .logo-foot img { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; }
+    footer .logo-foot img {
+      height: 44px; width: 44px;
+      border-radius: 50%; object-fit: cover;
+      background: #fff;
+      padding: 3px;
+      box-shadow: 0 0 0 2px var(--green), 0 2px 8px rgba(90,155,106,.15);
+    }
 
     /* ── TESTIMONIALS ── */
     #avis { background: var(--cream); }
@@ -750,7 +764,7 @@
       <div class="valise-category" id="valise-cat-bebe">
         <div class="valise-category-header">
           <span class="valise-category-icon">🍼</span>
-          <span class="valise-category-title">Bébé</span>
+          <span class="valise-category-title">Bébé / Enfant</span>
         </div>
         <div class="valise-items"></div>
         <div class="valise-add-row">
@@ -1241,9 +1255,23 @@
       return !!(state[catId] && state[catId].checked && state[catId].checked[key]);
     }
 
+    function ensureCat(state, catId) {
+      if (!state[catId]) state[catId] = { checked: {}, custom: [], deleted: [] };
+    }
+
     function setChecked(state, catId, key, val) {
-      if (!state[catId]) state[catId] = { checked: {}, custom: [] };
+      ensureCat(state, catId);
       state[catId].checked[key] = val;
+    }
+
+    function getDeleted(state, catId) {
+      return (state[catId] && state[catId].deleted) ? state[catId].deleted : [];
+    }
+
+    function deleteDefault(state, catId, key) {
+      ensureCat(state, catId);
+      if (!state[catId].deleted) state[catId].deleted = [];
+      if (state[catId].deleted.indexOf(key) < 0) state[catId].deleted.push(key);
     }
 
     function getCustomItems(state, catId) {
@@ -1251,7 +1279,7 @@
     }
 
     function addCustomItem(state, catId, label) {
-      if (!state[catId]) state[catId] = { checked: {}, custom: [] };
+      ensureCat(state, catId);
       if (!state[catId].custom) state[catId].custom = [];
       var id = 'c' + Date.now() + Math.random().toString(36).slice(2, 5);
       state[catId].custom.push({ id: id, label: label, checked: false });
@@ -1265,9 +1293,12 @@
     function countTotals(state) {
       var total = 0, checked = 0;
       CATEGORIES.forEach(function (cat) {
-        total += cat.defaults.length;
+        var deleted = getDeleted(state, cat.id);
         cat.defaults.forEach(function (label) {
-          if (getChecked(state, cat.id, 'd_' + label)) checked++;
+          var key = 'd_' + label;
+          if (deleted.indexOf(key) >= 0) return;
+          total++;
+          if (getChecked(state, cat.id, key)) checked++;
         });
         var customs = getCustomItems(state, cat.id);
         total += customs.length;
@@ -1287,14 +1318,26 @@
       if (pctEl) pctEl.textContent = pct + '%';
     }
 
+    function makeDelBtn(onClick) {
+      var del = document.createElement('button');
+      del.className = 'valise-item-del';
+      del.type = 'button';
+      del.title = 'Supprimer';
+      del.textContent = '✕';
+      del.addEventListener('click', function (e) { e.stopPropagation(); onClick(); });
+      return del;
+    }
+
     function renderCategory(cat, state) {
       var section = document.getElementById('valise-cat-' + cat.id);
       if (!section) return;
       var container = section.querySelector('.valise-items');
       container.innerHTML = '';
+      var deleted = getDeleted(state, cat.id);
 
       cat.defaults.forEach(function (label) {
         var key = 'd_' + label;
+        if (deleted.indexOf(key) >= 0) return;
         var isChecked = getChecked(state, cat.id, key);
         var item = document.createElement('div');
         item.className = 'valise-item';
@@ -1315,6 +1358,13 @@
         });
         item.appendChild(cb);
         item.appendChild(lbl);
+        item.appendChild(makeDelBtn(function () {
+          var s = loadState();
+          deleteDefault(s, cat.id, key);
+          saveState(s);
+          renderCategory(cat, s);
+          updateProgress(s);
+        }));
         container.appendChild(item);
       });
 
@@ -1330,11 +1380,6 @@
         lbl.className = 'valise-item-label';
         lbl.setAttribute('for', cbId);
         lbl.textContent = custom.label;
-        var del = document.createElement('button');
-        del.className = 'valise-item-del';
-        del.type = 'button';
-        del.title = 'Supprimer';
-        del.textContent = '✕';
         cb.addEventListener('change', function () {
           var s = loadState();
           var c = getCustomItems(s, cat.id).find(function (i) { return i.id === custom.id; });
@@ -1342,17 +1387,15 @@
           saveState(s);
           updateProgress(s);
         });
-        del.addEventListener('click', function (e) {
-          e.stopPropagation();
+        item.appendChild(cb);
+        item.appendChild(lbl);
+        item.appendChild(makeDelBtn(function () {
           var s = loadState();
           removeCustomItem(s, cat.id, custom.id);
           saveState(s);
           renderCategory(cat, s);
           updateProgress(s);
-        });
-        item.appendChild(cb);
-        item.appendChild(lbl);
-        item.appendChild(del);
+        }));
         container.appendChild(item);
       });
     }
@@ -1387,7 +1430,7 @@
       var resetBtn = document.getElementById('valise-reset-btn');
       if (resetBtn) {
         resetBtn.addEventListener('click', function () {
-          if (confirm('Réinitialiser toute la liste ? Les cases seront décochées et les items personnalisés supprimés.')) {
+          if (confirm('Réinitialiser toute la liste ? Les cases seront décochées et les items supprimés seront restaurés.')) {
             localStorage.removeItem(LS_KEY);
             var s = loadState();
             CATEGORIES.forEach(function (cat) { renderCategory(cat, s); });
