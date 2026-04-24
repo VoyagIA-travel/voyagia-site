@@ -1611,6 +1611,18 @@
     document.addEventListener('DOMContentLoaded', initValise);
   })();
 
+  /* ── Type de séjour (itinérant) ── */
+  function toggleItinerantFields() {
+    const itinerant = document.getElementById('sejour_itinerant');
+    const fields = document.getElementById('itinerant_fields');
+    const minSel = document.getElementById('logements_min');
+    const maxSel = document.getElementById('logements_max');
+    const isItinerant = itinerant && itinerant.checked;
+    if (fields) fields.style.display = isItinerant ? '' : 'none';
+    if (minSel) minSel.required = isItinerant;
+    if (maxSel) maxSel.required = isItinerant;
+  }
+
   /* ── Init ── */
   document.addEventListener('DOMContentLoaded', function () {
     // Adult ages
@@ -1625,6 +1637,11 @@
     // Date type toggle
     document.querySelectorAll('input[name="type_dates"]').forEach(function (r) {
       r.addEventListener('change', toggleDateFields);
+    });
+
+    // Type de séjour toggle
+    document.querySelectorAll('input[name="type_sejour"]').forEach(function (r) {
+      r.addEventListener('change', toggleItinerantFields);
     });
 
     // Clear budget button highlight when user types manually
