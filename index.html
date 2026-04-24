@@ -1061,24 +1061,192 @@
           </div>
         </div>
 
-        <!-- SECTION : EXPÉRIENCES -->
-        <div class="form-section-title">Expériences &amp; préférences</div>
+        <div>
+          <label for="nb_chambres">Nombre de chambres minimum <span>*</span></label>
+          <select id="nb_chambres" name="nb_chambres" required>
+            <option value="">-- Choisir --</option>
+            <option value="1">1 chambre</option>
+            <option value="2">2 chambres</option>
+            <option value="3">3 chambres</option>
+            <option value="4+">4 chambres ou plus</option>
+          </select>
+        </div>
+
+        <!-- SECTION : TYPE DE SÉJOUR -->
+        <div class="form-section-title">Type de séjour</div>
 
         <div class="form-full">
-          <label for="voyage_ideal">Décris ton voyage idéal <span>*</span></label>
-          <textarea id="voyage_ideal" name="voyage_ideal" placeholder="Ex : une semaine à la mer avec des enfants, des plages peu fréquentées, des restos locaux le soir, et une journée d'aventure…" required></textarea>
+          <label>Organisation du séjour <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="type_sejour" value="fixe" id="sejour_fixe" required /> 🏠 Logement fixe (un seul endroit)</label>
+            <label><input type="radio" name="type_sejour" value="itinerant" id="sejour_itinerant" /> 🚗 Itinérant (plusieurs logements)</label>
+          </div>
+          <div id="itinerant_fields" class="date-conditional" style="display:none;">
+            <div class="date-row">
+              <div>
+                <label for="logements_min">Nombre de logements minimum <span>*</span></label>
+                <select id="logements_min" name="logements_min">
+                  <option value="">-- Choisir --</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6+">6+</option>
+                </select>
+              </div>
+              <div>
+                <label for="logements_max">Nombre de logements maximum <span>*</span></label>
+                <select id="logements_max" name="logements_max">
+                  <option value="">-- Choisir --</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6+">6+</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- SECTION : VOS ATTENTES -->
+        <div class="form-section-title">Vos attentes pour ce voyage</div>
+
         <div class="form-full">
-          <label for="incontournables">Activités / lieux incontournables pour vous <span>*</span></label>
+          <label>Qu'attendez-vous principalement de ce voyage ? <span>*</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="attentes[]" value="detente" /> 😌 Détente &amp; ressourcement</label>
+            <label><input type="checkbox" name="attentes[]" value="decouverte" /> 🔍 Découverte &amp; exploration</label>
+            <label><input type="checkbox" name="attentes[]" value="aventure" /> 🧗 Aventure &amp; adrénaline</label>
+            <label><input type="checkbox" name="attentes[]" value="gastronomie" /> 🍽️ Gastronomie &amp; œnologie</label>
+            <label><input type="checkbox" name="attentes[]" value="culture" /> 🏛️ Culture &amp; histoire</label>
+            <label><input type="checkbox" name="attentes[]" value="nature" /> 🌿 Nature &amp; grands espaces</label>
+            <label><input type="checkbox" name="attentes[]" value="famille" /> 👨‍👩‍👧 Moments en famille</label>
+            <label><input type="checkbox" name="attentes[]" value="romantique" /> 💑 Escapade romantique</label>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <label for="incontournables">Y a-t-il des incontournables absolus à inclure ? <span>*</span></label>
           <textarea id="incontournables" name="incontournables" placeholder="ex : voir le Mont Fuji, faire de la plongée, visiter des musées d'art moderne, goûter la street food locale…" required></textarea>
         </div>
         <div class="form-full">
-          <label for="a_eviter">Ce que vous souhaitez éviter <span>*</span></label>
+          <label for="a_eviter">Y a-t-il des choses à éviter absolument ? <span>*</span></label>
           <textarea id="a_eviter" name="a_eviter" placeholder="ex : les endroits très touristiques, les transports de nuit, les longues marches, les visites guidées imposées…" required></textarea>
+        </div>
+        <div class="form-full">
+          <label for="contraintes">Avez-vous des contraintes particulières ? <span>*</span></label>
+          <textarea id="contraintes" name="contraintes" placeholder="ex : mobilité réduite, régime végétarien, allergie aux arachides, claustrophobie, peur de l'avion…" required></textarea>
         </div>
         <div class="form-full">
           <label for="experiences_passees">Vos voyages préférés (pour nous inspirer) <span>*</span></label>
           <textarea id="experiences_passees" name="experiences_passees" placeholder="ex : J'ai adoré le Maroc en 2022, notamment pour l'ambiance des souks et la cuisine. Je n'ai pas aimé l'Égypte car trop touristique." required></textarea>
+        </div>
+
+        <!-- SECTION : PRÉFÉRENCES PRATIQUES -->
+        <div class="form-section-title">Préférences pratiques</div>
+
+        <div class="form-full">
+          <label>Niveau de marche accepté <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="niveau_marche" value="aucun" required /> 🦽 Aucun (voiture / taxi uniquement)</label>
+            <label><input type="radio" name="niveau_marche" value="leger" /> 🚶 Léger (courtes distances)</label>
+            <label><input type="radio" name="niveau_marche" value="modere" /> 🥾 Modéré (marche régulière)</label>
+            <label><input type="radio" name="niveau_marche" value="sportif" /> 🏃 Sportif (randonnées, marche intensive)</label>
+          </div>
+        </div>
+
+        <div>
+          <label>Sensibilité à la chaleur <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="sensibilite_chaleur" value="adore" required /> ☀️ J'adore la chaleur</label>
+            <label><input type="radio" name="sensibilite_chaleur" value="supporte" /> 🌤️ Je la supporte bien</label>
+            <label><input type="radio" name="sensibilite_chaleur" value="difficile" /> 🌡️ J'ai du mal</label>
+            <label><input type="radio" name="sensibilite_chaleur" value="evite" /> ❄️ J'évite la chaleur</label>
+          </div>
+        </div>
+
+        <div>
+          <label>Sensibilité au froid <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="sensibilite_froid" value="adore" required /> ❄️ J'adore le froid</label>
+            <label><input type="radio" name="sensibilite_froid" value="supporte" /> 🌤️ Je le supporte bien</label>
+            <label><input type="radio" name="sensibilite_froid" value="difficile" /> 🧣 J'ai du mal</label>
+            <label><input type="radio" name="sensibilite_froid" value="evite" /> 🔥 J'évite le froid</label>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <label>Environnement préféré (plusieurs choix possibles) <span>*</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="environnement[]" value="ville" /> 🏙️ Ville</label>
+            <label><input type="checkbox" name="environnement[]" value="campagne" /> 🌾 Campagne</label>
+            <label><input type="checkbox" name="environnement[]" value="mer" /> 🏖️ Mer &amp; côte</label>
+            <label><input type="checkbox" name="environnement[]" value="montagne" /> ⛰️ Montagne</label>
+            <label><input type="checkbox" name="environnement[]" value="foret" /> 🌲 Forêt &amp; nature sauvage</label>
+            <label><input type="checkbox" name="environnement[]" value="desert" /> 🏜️ Désert</label>
+            <label><input type="checkbox" name="environnement[]" value="indifferent" /> 🤷 Peu importe</label>
+          </div>
+        </div>
+
+        <div>
+          <label>Piscine <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="piscine" value="indispensable" required /> 🏊 Indispensable</label>
+            <label><input type="radio" name="piscine" value="souhaitee" /> 👍 Souhaitée</label>
+            <label><input type="radio" name="piscine" value="indifferent" /> 🤷 Peu importe</label>
+            <label><input type="radio" name="piscine" value="non" /> ❌ Pas nécessaire</label>
+          </div>
+        </div>
+
+        <div>
+          <label>Besoin de Wi-Fi <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="wifi" value="indispensable" required /> 📶 Indispensable</label>
+            <label><input type="radio" name="wifi" value="souhaite" /> 👍 Souhaité</label>
+            <label><input type="radio" name="wifi" value="indifferent" /> 🤷 Peu importe</label>
+            <label><input type="radio" name="wifi" value="non" /> 🌿 Déconnexion totale souhaitée</label>
+          </div>
+        </div>
+
+        <div>
+          <label>Véhicule de location <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="vehicule_location" value="oui" required /> 🚗 Oui, je souhaite en louer un</label>
+            <label><input type="radio" name="vehicule_location" value="non" /> ❌ Non</label>
+            <label><input type="radio" name="vehicule_location" value="deja_prevu" /> ✅ Déjà prévu</label>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <label>Visites guidées <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="visites_guidees" value="oui" required /> 🎤 Oui, j'aime être accompagné</label>
+            <label><input type="radio" name="visites_guidees" value="selon" /> ⚖️ Selon l'activité</label>
+            <label><input type="radio" name="visites_guidees" value="non" /> 🗺️ Non, je préfère explorer librement</label>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <label>Fréquentation touristique acceptée <span>*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="frequentation" value="eviter" required /> 🏞️ Lieux authentiques, hors des sentiers battus</label>
+            <label><input type="radio" name="frequentation" value="mixte" /> ⚖️ Un mélange des deux</label>
+            <label><input type="radio" name="frequentation" value="ok" /> 🗼 Les incontournables, même touristiques</label>
+          </div>
+        </div>
+
+        <div class="form-full">
+          <label>Préférences &amp; restrictions alimentaires <span>*</span></label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="cuisine[]" value="aucune" /> ✅ Aucune restriction</label>
+            <label><input type="checkbox" name="cuisine[]" value="vegetarien" /> 🥗 Végétarien</label>
+            <label><input type="checkbox" name="cuisine[]" value="vegan" /> 🌱 Vegan</label>
+            <label><input type="checkbox" name="cuisine[]" value="halal" /> 🌙 Halal</label>
+            <label><input type="checkbox" name="cuisine[]" value="casher" /> ✡️ Casher</label>
+            <label><input type="checkbox" name="cuisine[]" value="sans_gluten" /> 🌾 Sans gluten</label>
+            <label><input type="checkbox" name="cuisine[]" value="allergies" /> ⚠️ Allergies (préciser dans contraintes)</label>
+          </div>
         </div>
 
         <!-- SECTION : INFOS COMPLÉMENTAIRES -->
