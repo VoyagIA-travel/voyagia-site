@@ -461,8 +461,11 @@
       height: 100%;
       background: linear-gradient(90deg, var(--green), var(--green-dark));
       border-radius: 50px;
-      transition: width .45s ease;
+      transition: width .45s ease, background .4s ease;
       width: 0%;
+    }
+    .valise-progress-bar-fill.complete {
+      background: linear-gradient(90deg, var(--gold), var(--gold-dark));
     }
     .valise-progress-pct {
       font-family: 'Playfair Display', serif;
@@ -470,6 +473,26 @@
       color: var(--green-dark);
       font-weight: 700;
       white-space: nowrap;
+      transition: color .4s ease;
+    }
+    .valise-progress-pct.complete { color: var(--gold-dark); }
+    .valise-complete-banner {
+      display: none;
+      margin-top: 1.2rem;
+      padding: 1rem 1.4rem;
+      background: linear-gradient(135deg, rgba(200,169,110,.15), rgba(200,169,110,.08));
+      border: 2px solid var(--gold);
+      border-radius: var(--radius);
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--gold-dark);
+      animation: popIn .4s ease;
+    }
+    .valise-complete-banner.visible { display: block; }
+    @keyframes popIn {
+      from { transform: scale(.92); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
     }
 
     .valise-grid {
