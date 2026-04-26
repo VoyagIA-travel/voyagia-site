@@ -107,6 +107,9 @@ voyagia-site/
 - **netlify.toml** : suppression du redirect catch-all `/* → /index.html` avec `status = 404` qui interceptait la redirection vers `merci.html` après soumission du formulaire
 - Le formulaire redirige maintenant correctement vers `/merci.html` sur Netlify
 
+### 2026-04-26 — Suppression section Ma Valise (VOYA-15)
+- **Ma Valise** retirée du site (CSS, HTML, JS, lien nav) — appartient au livrable itinéraire, pas à la page web
+
 ### 2026-04-26 — Détails réservations existantes (VOYA-15)
 - **Vols déjà réservés** : champs conditionnels — compagnie, numéro de vol / référence PNR, date et heure aller + retour
 - **Hébergement déjà réservé** : champs conditionnels — nom de l'hébergement + ville, avec bouton « + Ajouter un hébergement » pour les séjours itinérants
