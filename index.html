@@ -1255,10 +1255,76 @@
         <div class="form-full">
           <label>Avez-vous déjà réservé quelque chose ?</label>
           <div class="radio-group">
-            <label><input type="radio" name="deja_reserve" value="rien" /> ❌ Rien du tout</label>
-            <label><input type="radio" name="deja_reserve" value="vols" /> ✈️ Les vols</label>
-            <label><input type="radio" name="deja_reserve" value="hebergement" /> 🏨 L'hébergement</label>
-            <label><input type="radio" name="deja_reserve" value="tout" /> ✅ Vols + hébergement</label>
+            <label><input type="radio" name="deja_reserve" value="rien" id="reserve_rien" /> ❌ Rien du tout</label>
+            <label><input type="radio" name="deja_reserve" value="vols" id="reserve_vols" /> ✈️ Les vols</label>
+            <label><input type="radio" name="deja_reserve" value="hebergement" id="reserve_hebergement" /> 🏨 L'hébergement</label>
+            <label><input type="radio" name="deja_reserve" value="tout" id="reserve_tout" /> ✅ Vols + hébergement</label>
+          </div>
+
+          <!-- Détails vols (affiché si vols ou tout) -->
+          <div id="vol_details" class="date-conditional" style="display:none;">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.7rem;">Ces informations permettront à votre conseiller d'intégrer vos vols dans l'itinéraire.</p>
+            <div class="date-row" style="margin-bottom:.8rem;">
+              <div>
+                <label for="vol_compagnie_aller">Compagnie aérienne (aller) <span>*</span></label>
+                <input type="text" id="vol_compagnie_aller" name="vol_compagnie_aller" placeholder="ex : Air France, Ryanair, easyJet…" />
+              </div>
+              <div>
+                <label for="vol_numero_aller">N° de vol ou référence billet (aller) <span>*</span></label>
+                <input type="text" id="vol_numero_aller" name="vol_numero_aller" placeholder="ex : AF1234 ou PNR : XY4Z8Q" />
+              </div>
+            </div>
+            <div class="date-row" style="margin-bottom:.8rem;">
+              <div>
+                <label for="vol_date_aller">Date du vol aller <span>*</span></label>
+                <input type="date" id="vol_date_aller" name="vol_date_aller" />
+              </div>
+              <div>
+                <label for="vol_heure_aller">Heure de départ (aller)</label>
+                <input type="text" id="vol_heure_aller" name="vol_heure_aller" placeholder="ex : 08h30" />
+              </div>
+            </div>
+            <div class="date-row" style="margin-bottom:.4rem;">
+              <div>
+                <label for="vol_compagnie_retour">Compagnie aérienne (retour)</label>
+                <input type="text" id="vol_compagnie_retour" name="vol_compagnie_retour" placeholder="ex : Air France (si différent)" />
+              </div>
+              <div>
+                <label for="vol_numero_retour">N° de vol ou référence billet (retour)</label>
+                <input type="text" id="vol_numero_retour" name="vol_numero_retour" placeholder="ex : AF5678 ou même PNR" />
+              </div>
+            </div>
+            <div class="date-row">
+              <div>
+                <label for="vol_date_retour">Date du vol retour</label>
+                <input type="date" id="vol_date_retour" name="vol_date_retour" />
+              </div>
+              <div>
+                <label for="vol_heure_retour">Heure de départ (retour)</label>
+                <input type="text" id="vol_heure_retour" name="vol_heure_retour" placeholder="ex : 17h45" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Détails hébergement (affiché si hébergement ou tout) -->
+          <div id="hotel_details" class="date-conditional" style="display:none;">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.7rem;">Indiquez le ou les hébergements déjà réservés (ajoutez autant de lignes que nécessaire).</p>
+            <div id="hotel_list">
+              <div class="hotel-entry" style="display:grid;grid-template-columns:1fr 1fr auto;gap:.7rem;align-items:end;margin-bottom:.6rem;">
+                <div>
+                  <label>Nom de l'hébergement <span>*</span></label>
+                  <input type="text" name="hotel_nom[]" placeholder="ex : Hôtel Mercure, Airbnb « Villa Rosa »" />
+                </div>
+                <div>
+                  <label>Ville <span>*</span></label>
+                  <input type="text" name="hotel_ville[]" placeholder="ex : Rome, Barcelone" />
+                </div>
+                <div style="padding-bottom:.1rem;">
+                  <button type="button" class="hotel-remove-btn" title="Supprimer" style="display:none;">✕</button>
+                </div>
+              </div>
+            </div>
+            <button type="button" id="hotel_add_btn" style="background:none;border:1.5px dashed var(--green);border-radius:8px;padding:.45rem 1rem;font-family:inherit;font-size:.88rem;font-weight:700;color:var(--green-dark);cursor:pointer;margin-top:.2rem;">+ Ajouter un hébergement</button>
           </div>
         </div>
         <div>
