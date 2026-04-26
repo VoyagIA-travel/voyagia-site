@@ -1571,12 +1571,23 @@
     function updateProgress(state) {
       var counts = countTotals(state);
       var pct = counts.total > 0 ? Math.round(counts.checked / counts.total * 100) : 0;
+      var complete = counts.total > 0 && counts.checked === counts.total;
       var fill = document.getElementById('valise-progress-fill');
       var lbl = document.getElementById('valise-progress-label');
       var pctEl = document.getElementById('valise-progress-pct');
-      if (fill) fill.style.width = pct + '%';
-      if (lbl) lbl.textContent = counts.checked + '/' + counts.total + ' items prêts — ' + pct + '%';
-      if (pctEl) pctEl.textContent = pct + '%';
+      var banner = document.getElementById('valise-complete-banner');
+      if (fill) {
+        fill.style.width = pct + '%';
+        fill.classList.toggle('complete', complete);
+      }
+      if (lbl) lbl.textContent = complete
+        ? '✅ ' + counts.total + '/' + counts.total + ' items — valise bouclée !'
+        : counts.checked + '/' + counts.total + ' items prêts — ' + pct + '%';
+      if (pctEl) {
+        pctEl.textContent = pct + '%';
+        pctEl.classList.toggle('complete', complete);
+      }
+      if (banner) banner.classList.toggle('visible', complete);
     }
 
     function makeDelBtn(onClick) {
