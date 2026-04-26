@@ -107,6 +107,12 @@ voyagia-site/
 - **netlify.toml** : suppression du redirect catch-all `/* → /index.html` avec `status = 404` qui interceptait la redirection vers `merci.html` après soumission du formulaire
 - Le formulaire redirige maintenant correctement vers `/merci.html` sur Netlify
 
+### 2026-04-26 — Détails réservations existantes (VOYA-15)
+- **Vols déjà réservés** : champs conditionnels — compagnie, numéro de vol / référence PNR, date et heure aller + retour
+- **Hébergement déjà réservé** : champs conditionnels — nom de l'hébergement + ville, avec bouton « + Ajouter un hébergement » pour les séjours itinérants
+- **Vols + hébergement** : affiche les deux blocs simultanément
+- Les blocs s'affichent/masquent dynamiquement selon le choix radio « Avez-vous déjà réservé ? »
+
 ### 2026-04-24 — Amélioration questionnaire v2 (VOYA-15)
 - **Type de séjour** : nouveau choix logement fixe vs itinérant — si itinérant, affichage conditionnel des dropdowns min/max logements
 - **Nombre de chambres minimum** : dropdown 1 / 2 / 3 / 4+ dans la section Hébergement
