@@ -1759,6 +1759,12 @@
       r.addEventListener('change', toggleItinerantFields);
     });
 
+    // Réservations existantes toggle
+    document.querySelectorAll('input[name="deja_reserve"]').forEach(function (r) {
+      r.addEventListener('change', toggleReserveDetails);
+    });
+    initHotelAdd();
+
     // Clear budget button highlight when user types manually
     document.getElementById('budget_text').addEventListener('input', function () {
       document.querySelectorAll('.budget-btn').forEach(btn => btn.classList.remove('active'));
