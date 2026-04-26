@@ -1677,6 +1677,55 @@
     document.addEventListener('DOMContentLoaded', initValise);
   })();
 
+  /* ── Réservations existantes ── */
+  function toggleReserveDetails() {
+    var val = '';
+    document.querySelectorAll('input[name="deja_reserve"]').forEach(function(r) {
+      if (r.checked) val = r.value;
+    });
+    var showVols = (val === 'vols' || val === 'tout');
+    var showHotel = (val === 'hebergement' || val === 'tout');
+    var volDiv = document.getElementById('vol_details');
+    var hotelDiv = document.getElementById('hotel_details');
+    if (volDiv) volDiv.style.display = showVols ? '' : 'none';
+    if (hotelDiv) hotelDiv.style.display = showHotel ? '' : 'none';
+    // Toggle required on vol fields
+    ['vol_compagnie_aller', 'vol_numero_aller', 'vol_date_aller'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.required = showVols;
+    });
+  }
+
+  function initHotelAdd() {
+    var addBtn = document.getElementById('hotel_add_btn');
+    if (!addBtn) return;
+    addBtn.addEventListener('click', function() {
+      var list = document.getElementById('hotel_list');
+      var entry = document.createElement('div');
+      entry.className = 'hotel-entry';
+      entry.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:.7rem;align-items:end;margin-bottom:.6rem;';
+      entry.innerHTML = '<div><label>Nom de l\'hébergement</label><input type="text" name="hotel_nom[]" placeholder="ex : Hôtel Mercure, Airbnb…" /></div>' +
+        '<div><label>Ville</label><input type="text" name="hotel_ville[]" placeholder="ex : Rome, Barcelone" /></div>' +
+        '<div style="padding-bottom:.1rem;"><button type="button" class="hotel-remove-btn" title="Supprimer" style="background:none;border:1.5px solid #e0d9cf;border-radius:6px;padding:.3rem .6rem;cursor:pointer;font-size:.85rem;color:var(--muted);">✕</button></div>';
+      list.appendChild(entry);
+      updateRemoveBtns();
+    });
+    document.getElementById('hotel_list').addEventListener('click', function(e) {
+      if (e.target.classList.contains('hotel-remove-btn')) {
+        e.target.closest('.hotel-entry').remove();
+        updateRemoveBtns();
+      }
+    });
+  }
+
+  function updateRemoveBtns() {
+    var entries = document.querySelectorAll('#hotel_list .hotel-entry');
+    entries.forEach(function(entry, i) {
+      var btn = entry.querySelector('.hotel-remove-btn');
+      if (btn) btn.style.display = entries.length > 1 ? '' : 'none';
+    });
+  }
+
   /* ── Type de séjour (itinérant) ── */
   function toggleItinerantFields() {
     const itinerant = document.getElementById('sejour_itinerant');
