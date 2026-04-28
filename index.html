@@ -1668,22 +1668,19 @@
   var totalItems = 0;
 
   function renderPackingList() {
-    var container = document.getElementById('packing-items');
-    if (container.children.length > 0) return; // already rendered
+    var parent = document.getElementById('packing-categories');
+    if (!parent || parent.children.length > 0) return; // already rendered
 
     // Count total
+    totalItems = 0;
     packingData.forEach(function(cat) { totalItems += cat.items.length; });
-
-    // Clear and rebuild
-    container.parentNode.innerHTML = '';
-    var parent = container.parentNode;
 
     packingData.forEach(function(cat, ci) {
       var catDiv = document.createElement('div');
       catDiv.className = 'packing-category';
       var catTitle = document.createElement('div');
       catTitle.className = 'packing-category-title';
-      catTitle.textContent = cat.title || cat.cat;
+      catTitle.textContent = cat.cat;
       catDiv.appendChild(catTitle);
 
       var itemsDiv = document.createElement('div');
