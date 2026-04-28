@@ -7,6 +7,7 @@
   <meta name="description" content="VoyagIA crée des itinéraires de voyage personnalisés pour toute la famille grâce à votre conseiller voyage personnel." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,35 +33,82 @@
       line-height: 1.7;
     }
 
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-up-delay-1 { transition-delay: .1s; }
+    .fade-up-delay-2 { transition-delay: .2s; }
+    .fade-up-delay-3 { transition-delay: .3s; }
+    .fade-up-delay-4 { transition-delay: .4s; }
+
     /* ── NAV ── */
     nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(248,253,249,.95);
-      backdrop-filter: blur(10px);
+      background: rgba(248,253,249,.97);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid #d8ead9;
       padding: .9rem 2rem;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .logo-img-link { display: flex; align-items: center; text-decoration: none; }
+    .logo-img-link { display: flex; align-items: center; text-decoration: none; gap: .7rem; }
     .logo-img {
-      height: 48px; width: 48px; display: block;
+      height: 44px; width: 44px; display: block;
       border-radius: 50%; object-fit: cover;
       background: #fff;
       padding: 3px;
       box-shadow: 0 0 0 2px var(--green), 0 2px 8px rgba(90,155,106,.18);
     }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .logo-name {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.4rem;
+      color: var(--green-deep);
+      letter-spacing: .02em;
+    }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; align-items: center; }
     .nav-links a {
-      text-decoration: none; color: var(--muted); font-weight: 600;
+      text-decoration: none; color: var(--muted); font-weight: 600; font-size: .93rem;
       transition: color .2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--green-dark);
+      border-radius: 2px;
+      transition: width .2s;
     }
     .nav-links a:hover { color: var(--green-dark); }
+    .nav-links a:hover::after { width: 100%; }
     .nav-cta {
       background: var(--green); color: #fff !important;
       padding: .45rem 1.2rem; border-radius: 50px;
-      transition: background .2s !important;
+      transition: background .2s, transform .18s !important;
     }
-    .nav-cta:hover { background: var(--green-dark) !important; color: #fff !important; }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--green-dark) !important; color: #fff !important; transform: translateY(-1px); }
+
+    /* Hamburger */
+    .nav-burger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: .3rem;
+    }
+    .nav-burger span {
+      display: block; width: 24px; height: 2.5px;
+      background: var(--green-dark); border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+    .nav-burger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .nav-burger.open span:nth-child(2) { opacity: 0; }
+    .nav-burger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
     /* ── HERO ── */
     .hero {
@@ -69,21 +117,22 @@
       text-align: center;
       padding: 5rem 1.5rem 4rem;
       background:
-        radial-gradient(ellipse at 70% 10%, rgba(127,186,138,.18) 0%, transparent 55%),
-        radial-gradient(ellipse at 20% 80%, rgba(200,169,110,.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 10%, rgba(127,186,138,.22) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(200,169,110,.14) 0%, transparent 50%),
         var(--sand);
+      overflow: hidden;
     }
-    .hero-logo {
-      margin-bottom: 2rem;
-    }
+    .hero-logo { margin-bottom: 2rem; }
     .hero-logo img {
-      height: 120px;
-      width: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #fff;
-      padding: 5px;
+      height: 120px; width: 120px;
+      border-radius: 50%; object-fit: cover;
+      background: #fff; padding: 5px;
       box-shadow: 0 0 0 3px var(--green), 0 8px 30px rgba(90,155,106,.3);
+      animation: floatLogo 4s ease-in-out infinite;
+    }
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
     .hero-badge {
       display: inline-block;
@@ -98,11 +147,11 @@
       font-family: 'Playfair Display', serif;
       font-size: clamp(2.2rem, 5vw, 3.8rem);
       line-height: 1.2;
-      max-width: 750px;
+      max-width: 780px;
       margin-bottom: 1.2rem;
     }
     .hero h1 em { color: var(--green-dark); font-style: normal; }
-    .hero p {
+    .hero > p {
       font-size: clamp(1rem, 2vw, 1.2rem);
       color: var(--muted);
       max-width: 580px;
@@ -111,7 +160,7 @@
     .btn-primary {
       display: inline-block;
       background: var(--green); color: #fff;
-      padding: .85rem 2.2rem; border-radius: 50px;
+      padding: .9rem 2.4rem; border-radius: 50px;
       font-size: 1.05rem; font-weight: 700;
       text-decoration: none;
       box-shadow: 0 6px 20px rgba(127,186,138,.4);
@@ -119,19 +168,30 @@
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(127,186,138,.5); }
 
+    .hero-family-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(200,169,110,.14); color: var(--gold-dark);
+      font-size: .88rem; font-weight: 700;
+      padding: .4rem 1.1rem; border-radius: 50px;
+      margin-top: 1.4rem;
+      border: 1px solid rgba(200,169,110,.3);
+    }
+
     .hero-illustration {
-      margin-top: 4rem;
-      display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;
+      margin-top: 3.5rem;
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
     }
     .hero-card {
       background: #fff;
       border-radius: var(--radius);
-      padding: 1.2rem 1.5rem;
+      padding: 1rem 1.4rem;
       box-shadow: 0 4px 20px rgba(0,0,0,.07);
-      display: flex; align-items: center; gap: .8rem;
-      font-weight: 600;
+      display: flex; align-items: center; gap: .7rem;
+      font-weight: 600; font-size: .93rem;
+      transition: transform .2s, box-shadow .2s;
     }
-    .hero-card .icon { font-size: 1.6rem; }
+    .hero-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.11); }
+    .hero-card .icon { font-size: 1.5rem; }
 
     /* ── SECTIONS COMMON ── */
     section { padding: 5rem 1.5rem; }
@@ -155,19 +215,74 @@
       margin-bottom: 3rem;
     }
 
+    /* ── TRAVEL PLANNER SECTION ── */
+    #travel-planner {
+      background: linear-gradient(135deg, rgba(127,186,138,.1) 0%, rgba(200,169,110,.08) 100%);
+      border-top: 1px solid #ddeedd;
+      border-bottom: 1px solid #ddeedd;
+    }
+    .tp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) { .tp-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+    .tp-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+      line-height: 1.6;
+      color: var(--text);
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 4px solid var(--green);
+      font-style: italic;
+    }
+    .tp-quote::before {
+      content: '\201C';
+      font-size: 4rem;
+      color: var(--green);
+      opacity: .3;
+      position: absolute;
+      top: -1rem; left: -.5rem;
+      font-style: normal;
+    }
+    .tp-features { display: flex; flex-direction: column; gap: 1.4rem; }
+    .tp-feature {
+      display: flex; align-items: flex-start; gap: 1.1rem;
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      box-shadow: 0 3px 16px rgba(0,0,0,.05);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .tp-feature:hover { transform: translateX(5px); box-shadow: 0 6px 22px rgba(0,0,0,.08); }
+    .tp-feature-icon {
+      font-size: 1.7rem; flex-shrink: 0;
+      background: var(--sand);
+      border-radius: 10px;
+      width: 3rem; height: 3rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tp-feature-text h4 { font-size: 1rem; margin-bottom: .2rem; }
+    .tp-feature-text p { font-size: .9rem; color: var(--muted); }
+
     /* ── HOW IT WORKS ── */
     #services { background: var(--cream); }
     .steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 2rem;
+      margin-bottom: 3rem;
     }
     .step {
       background: var(--sand);
       border-radius: var(--radius);
       padding: 2rem 1.8rem;
       position: relative;
+      transition: transform .2s, box-shadow .2s;
     }
+    .step:hover { transform: translateY(-4px); box-shadow: 0 8px 26px rgba(0,0,0,.08); }
     .step-num {
       width: 2.4rem; height: 2.4rem;
       background: var(--green); color: #fff;
@@ -179,42 +294,220 @@
     .step h3 { font-size: 1.05rem; margin-bottom: .5rem; }
     .step p { color: var(--muted); font-size: .95rem; }
 
-    /* ── SAMPLE DELIVERABLE ── */
-    #exemple { background: var(--sand); }
+    /* No-phone callout */
+    .no-phone-box {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 2.2rem 2.5rem;
+      box-shadow: 0 4px 22px rgba(0,0,0,.06);
+      display: flex; gap: 1.8rem; align-items: flex-start;
+      border-left: 5px solid var(--green);
+      max-width: 820px;
+    }
+    .no-phone-box .icon-big { font-size: 2.5rem; flex-shrink: 0; margin-top: .1rem; }
+    .no-phone-box h3 {
+      font-size: 1.15rem; margin-bottom: .6rem; color: var(--green-deep);
+    }
+    .no-phone-box p { font-size: .97rem; color: var(--muted); line-height: 1.75; }
+    .no-phone-box p strong { color: var(--text); }
+
+    /* ── EXEMPLES SECTION ── */
+    #exemples { background: var(--sand); }
+    .exemple-tabs {
+      display: flex; gap: .7rem; margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: #fff;
+      border: 1.5px solid #d8ead9;
+      border-radius: 50px;
+      padding: .45rem 1.2rem;
+      font-family: inherit; font-size: .9rem; font-weight: 700;
+      color: var(--muted); cursor: pointer;
+      transition: all .2s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--green); color: #fff; border-color: var(--green);
+    }
+
+    .exemple-content { display: none; }
+    .exemple-content.active { display: block; }
+
+    .exemple-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 768px) { .exemple-grid { grid-template-columns: 1fr; } }
+
     .livrable-card {
       background: #fff;
       border-radius: var(--radius);
       box-shadow: 0 6px 28px rgba(0,0,0,.07);
-      padding: 2.5rem;
-      max-width: 780px;
+      padding: 2rem;
     }
     .livrable-card h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.5rem; margin-bottom: .4rem;
+      font-size: 1.4rem; margin-bottom: .4rem;
     }
     .livrable-card .trip-meta {
-      color: var(--muted); font-size: .9rem; margin-bottom: 1.5rem;
+      color: var(--muted); font-size: .88rem; margin-bottom: 1.5rem;
+      padding-bottom: .9rem; border-bottom: 1px solid var(--sand);
     }
-    .day-list { list-style: none; display: flex; flex-direction: column; gap: .8rem; }
+    .day-list { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
     .day-list li {
-      display: flex; gap: 1rem; align-items: flex-start;
-      background: var(--sand); border-radius: 10px; padding: .9rem 1rem;
+      display: flex; gap: .9rem; align-items: flex-start;
+      background: var(--sand); border-radius: 10px; padding: .85rem .95rem;
+      transition: background .2s;
     }
+    .day-list li:hover { background: rgba(127,186,138,.12); }
     .day-num {
       background: var(--green); color: #fff;
-      border-radius: 8px; padding: .2rem .6rem;
-      font-size: .8rem; font-weight: 800; white-space: nowrap; flex-shrink: 0;
+      border-radius: 8px; padding: .2rem .55rem;
+      font-size: .78rem; font-weight: 800; white-space: nowrap; flex-shrink: 0;
     }
-    .day-list li div { font-size: .95rem; }
-    .day-list li strong { display: block; margin-bottom: .15rem; }
+    .day-list li div { font-size: .93rem; }
+    .day-list li strong { display: block; margin-bottom: .1rem; }
     .livrable-note {
-      margin-top: 1.5rem;
-      padding: 1rem 1.2rem;
-      background: rgba(127,186,138,.12);
+      margin-top: 1.3rem;
+      padding: .9rem 1.1rem;
+      background: rgba(127,186,138,.1);
       border-left: 4px solid var(--green);
       border-radius: 0 8px 8px 0;
-      font-size: .9rem; color: var(--muted);
+      font-size: .88rem; color: var(--muted);
     }
+
+    /* Map */
+    #voyage-map {
+      height: 320px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 22px rgba(0,0,0,.1);
+    }
+
+    /* Packing list */
+    .packing-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 18px rgba(0,0,0,.06);
+      padding: 1.6rem;
+      margin-top: 2rem;
+    }
+    .packing-card h4 {
+      font-size: 1.05rem;
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .packing-progress {
+      background: var(--sand);
+      border-radius: 50px; height: 8px;
+      margin-bottom: 1.2rem; overflow: hidden;
+    }
+    .packing-progress-bar {
+      height: 100%; background: var(--green); border-radius: 50px;
+      transition: width .4s ease;
+      width: 0%;
+    }
+    .packing-progress-label {
+      font-size: .82rem; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .packing-category { margin-bottom: 1rem; }
+    .packing-category-title {
+      font-size: .75rem; font-weight: 800; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--green-dark);
+      margin-bottom: .5rem;
+    }
+    .packing-items { display: flex; flex-direction: column; gap: .35rem; }
+    .packing-item {
+      display: flex; align-items: center; gap: .7rem;
+      padding: .45rem .7rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .15s;
+      user-select: none;
+    }
+    .packing-item:hover { background: var(--sand); }
+    .packing-item input[type="checkbox"] {
+      width: 1.1rem; height: 1.1rem;
+      accent-color: var(--green);
+      cursor: pointer; flex-shrink: 0;
+    }
+    .packing-item label {
+      font-size: .92rem; cursor: pointer;
+      transition: color .2s, text-decoration .2s;
+    }
+    .packing-item.checked label {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    /* ── TESTIMONIALS ── */
+    #avis { background: var(--cream); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+    .testimonial-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 22px rgba(0,0,0,.06);
+      padding: 2rem 1.8rem;
+      position: relative;
+      border-top: 4px solid var(--sand);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(0,0,0,.1);
+    }
+    .testimonial-card:nth-child(2) { border-top-color: rgba(127,186,138,.5); }
+    .testimonial-card:nth-child(3) { border-top-color: rgba(90,155,106,.4); }
+    .testimonial-stars { font-size: 1.1rem; margin-bottom: .8rem; letter-spacing: .05em; }
+    .testimonial-quote {
+      font-size: .97rem;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 1.4rem;
+      font-style: italic;
+    }
+    .testimonial-quote::before { content: "\201C"; font-size: 2.5rem; color: var(--sand); line-height: 0; vertical-align: -0.6rem; margin-right: .1rem; font-style: normal; font-family: 'Playfair Display', serif; }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+    }
+    .testimonial-avatar {
+      width: 2.8rem; height: 2.8rem;
+      border-radius: 50%;
+      background: var(--sand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .testimonial-name { font-weight: 800; font-size: .95rem; }
+    .testimonial-trip { font-size: .82rem; color: var(--muted); margin-top: .1rem; }
+
+    /* ── STATS BANNER ── */
+    .stats-banner {
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 2rem 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 3rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--green-dark);
+      line-height: 1;
+    }
+    .stat-label { font-size: .85rem; color: var(--muted); margin-top: .3rem; font-weight: 600; }
 
     /* ── QUESTIONNAIRE ── */
     #questionnaire { background: var(--cream); }
@@ -343,13 +636,46 @@
     button[type=submit]:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(127,186,138,.5); }
     .form-note { color: var(--muted); font-size: .82rem; margin-top: .6rem; }
 
+    /* ── CONTACT SECTION ── */
+    #contact { background: var(--sand); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-info { display: flex; flex-direction: column; gap: 1.4rem; }
+    .contact-item {
+      display: flex; align-items: center; gap: 1rem;
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 3px 14px rgba(0,0,0,.05);
+      text-decoration: none;
+      color: var(--text);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .contact-item:hover { transform: translateX(5px); box-shadow: 0 6px 22px rgba(0,0,0,.09); }
+    .contact-item .icon { font-size: 1.8rem; flex-shrink: 0; }
+    .contact-item strong { display: block; font-size: .95rem; margin-bottom: .1rem; }
+    .contact-item span { font-size: .88rem; color: var(--muted); }
+    .contact-tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+    .contact-tagline em { color: var(--green-dark); font-style: normal; }
+    .contact-sub { color: var(--muted); font-size: 1rem; margin-bottom: 2rem; }
+
     /* ── FOOTER ── */
     footer {
       text-align: center; padding: 2.5rem 1.5rem;
-      background: var(--sand);
-      color: var(--muted); font-size: .9rem;
+      background: var(--green-deep);
+      color: rgba(255,255,255,.75); font-size: .9rem;
     }
-    footer a { color: var(--green-dark); text-decoration: none; }
+    footer a { color: rgba(255,255,255,.9); text-decoration: none; }
     footer .logo-foot {
       display: block; margin-bottom: .8rem;
     }
@@ -358,190 +684,274 @@
       border-radius: 50%; object-fit: cover;
       background: #fff;
       padding: 3px;
-      box-shadow: 0 0 0 2px var(--green), 0 2px 8px rgba(90,155,106,.15);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.4), 0 2px 8px rgba(0,0,0,.2);
     }
-
-    /* ── TESTIMONIALS ── */
-    #avis { background: var(--cream); }
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.8rem;
+    .footer-links {
+      display: flex; gap: 1.5rem; justify-content: center;
+      margin-bottom: 1rem; flex-wrap: wrap;
     }
-    .testimonial-card {
-      background: #fff;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 22px rgba(0,0,0,.06);
-      padding: 2rem 1.8rem;
-      position: relative;
-      border-top: 4px solid var(--sand);
-      transition: transform .2s, box-shadow .2s;
-    }
-    .testimonial-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 32px rgba(0,0,0,.1);
-    }
-    .testimonial-card:nth-child(2) { border-top-color: rgba(127,186,138,.5); }
-    .testimonial-card:nth-child(3) { border-top-color: rgba(90,155,106,.4); }
-    .testimonial-stars { font-size: 1.1rem; margin-bottom: .8rem; letter-spacing: .05em; }
-    .testimonial-quote {
-      font-size: .97rem;
-      line-height: 1.65;
-      color: var(--text);
-      margin-bottom: 1.4rem;
-      font-style: italic;
-    }
-    .testimonial-quote::before { content: "\201C"; font-size: 2.5rem; color: var(--sand); line-height: 0; vertical-align: -0.6rem; margin-right: .1rem; font-style: normal; font-family: 'Playfair Display', serif; }
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: .9rem;
-    }
-    .testimonial-avatar {
-      width: 2.8rem; height: 2.8rem;
-      border-radius: 50%;
-      background: var(--sand);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
-      flex-shrink: 0;
-    }
-    .testimonial-name { font-weight: 800; font-size: .95rem; }
-    .testimonial-trip { font-size: .82rem; color: var(--muted); margin-top: .1rem; }
-
-    /* ── STATS BANNER ── */
-    .stats-banner {
-      background: var(--sand);
-      border-radius: var(--radius);
-      padding: 2rem 2.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-      margin-top: 3rem;
-    }
-    .stat-item { text-align: center; }
-    .stat-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
-      color: var(--green-dark);
-      line-height: 1;
-    }
-    .stat-label { font-size: .85rem; color: var(--muted); margin-top: .3rem; font-weight: 600; }
+    .footer-links a { font-weight: 600; font-size: .88rem; }
 
     /* ── RESPONSIVE NAV ── */
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(248,253,249,.98);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        padding: 1rem 2rem 1.5rem;
+        border-bottom: 1px solid #d8ead9;
+        gap: .9rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-burger { display: flex; }
     }
   </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav>
-  <a href="#" class="logo-img-link">
+<nav id="accueil-nav">
+  <a href="#accueil" class="logo-img-link">
     <img src="logo.png" alt="VoyagIA" class="logo-img" />
+    <span class="logo-name">VoyagIA</span>
   </a>
-  <ul class="nav-links">
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#accueil">Accueil</a></li>
     <li><a href="#services">Comment ça marche</a></li>
-    <li><a href="#exemple">Exemple</a></li>
+    <li><a href="#exemples">Exemples</a></li>
     <li><a href="#avis">Avis</a></li>
-<li><a href="#questionnaire" class="nav-cta">Commencer</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#questionnaire" class="nav-cta">Commencer →</a></li>
   </ul>
+  <button class="nav-burger" id="nav-burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="accueil">
   <div class="hero-logo">
     <img src="logo.png" alt="VoyagIA" />
   </div>
   <div class="hero-badge">✨ Conçu avec passion &amp; expertise voyage</div>
   <h1>Votre voyage <em>sur-mesure</em>,<br/>imaginé pour toute la famille</h1>
-  <p>Répondez à notre questionnaire, et VoyagIA compose pour vous un itinéraire personnalisé, adapté à vos envies, votre budget et votre rythme.</p>
+  <p>Répondez à notre questionnaire, et VoyagIA compose pour vous un itinéraire personnalisé, adapté à vos envies, votre budget et votre rythme — rien que pour vous.</p>
   <a href="#questionnaire" class="btn-primary">Créer mon itinéraire →</a>
+  <div class="hero-family-badge">👨‍👩‍👧‍👦 Spécialiste voyages en famille</div>
 
   <div class="hero-illustration">
     <div class="hero-card"><span class="icon">🗺️</span> Itinéraire jour par jour</div>
     <div class="hero-card"><span class="icon">👨‍👩‍👧</span> Adapté à votre famille</div>
     <div class="hero-card"><span class="icon">💶</span> Selon votre budget</div>
     <div class="hero-card"><span class="icon">⚡</span> Livré rapidement</div>
+    <div class="hero-card"><span class="icon">💬</span> 100% par messages</div>
+  </div>
+</section>
+
+<!-- TRAVEL PLANNER SECTION -->
+<section id="travel-planner">
+  <div class="container">
+    <div class="tp-grid">
+      <div class="fade-up">
+        <span class="section-label">C'est quoi un travel planner ?</span>
+        <h2>Un ami qui connaît<br/>tout des voyages</h2>
+        <p class="tp-quote">
+          C'est comme avoir un ami qui connaît tout des voyages, qui prend le temps de vraiment vous connaître et qui compose votre voyage de A à Z, rien que pour vous — pour que vous n'ayez plus qu'à profiter.
+        </p>
+        <br/>
+        <a href="#questionnaire" class="btn-primary" style="margin-top:.5rem;">Je veux ce voyage →</a>
+      </div>
+      <div class="tp-features">
+        <div class="tp-feature fade-up fade-up-delay-1">
+          <div class="tp-feature-icon">🎯</div>
+          <div class="tp-feature-text">
+            <h4>Un itinéraire rien que pour vous</h4>
+            <p>Pas de copier-coller, chaque voyage est pensé sur-mesure selon vos envies, votre rythme, votre famille.</p>
+          </div>
+        </div>
+        <div class="tp-feature fade-up fade-up-delay-2">
+          <div class="tp-feature-icon">👨‍👩‍👧‍👦</div>
+          <div class="tp-feature-text">
+            <h4>Expert voyages en famille</h4>
+            <p>Musées adaptés, restaurants kids-friendly, activités pour tous les âges — chaque détail compte.</p>
+          </div>
+        </div>
+        <div class="tp-feature fade-up fade-up-delay-3">
+          <div class="tp-feature-icon">🏡</div>
+          <div class="tp-feature-text">
+            <h4>Des perles cachées, loin des foules</h4>
+            <p>Des adresses que vous ne trouverez pas dans les guides classiques, dénichées avec passion.</p>
+          </div>
+        </div>
+        <div class="tp-feature fade-up fade-up-delay-4">
+          <div class="tp-feature-icon">📋</div>
+          <div class="tp-feature-text">
+            <h4>Un livrable complet, prêt à partir</h4>
+            <p>Programme heure par heure, carte interactive, checklist valise, conseils pratiques — tout est inclus.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section id="services">
   <div class="container">
-    <span class="section-label">Comment ça marche</span>
-    <h2>Simple, rapide, personnalisé</h2>
-    <p class="sub">En quelques minutes, vous partagez vos envies — nous nous occupons du reste.</p>
+    <span class="section-label">Comment on fonctionne</span>
+    <h2 class="fade-up">Simple, rapide, personnalisé</h2>
+    <p class="sub fade-up">En quelques minutes, vous partagez vos envies — je m'occupe du reste.</p>
     <div class="steps">
-      <div class="step">
+      <div class="step fade-up fade-up-delay-1">
         <div class="step-num">1</div>
         <h3>Remplissez le questionnaire</h3>
-        <p>Destination, dates, budget, style de voyage, membres de la famille… on veut tout savoir !</p>
+        <p>Destination, dates, budget, style de voyage, membres de la famille… plus vous partagez, plus votre itinéraire sera précis.</p>
       </div>
-      <div class="step">
+      <div class="step fade-up fade-up-delay-2">
         <div class="step-num">2</div>
-        <h3>Votre conseiller analyse vos envies</h3>
-        <p>Votre expert voyage dédié croise vos préférences avec les meilleures options disponibles pour composer votre voyage idéal.</p>
+        <h3>J'analyse vos envies</h3>
+        <p>Je croise vos préférences avec les meilleures options disponibles pour composer votre voyage idéal, sur-mesure.</p>
       </div>
-      <div class="step">
+      <div class="step fade-up fade-up-delay-3">
         <div class="step-num">3</div>
-        <h3>Recevez votre itinéraire</h3>
-        <p>Un programme détaillé jour par jour, avec lieux, activités, hébergements et conseils pratiques.</p>
+        <h3>Vous recevez votre itinéraire</h3>
+        <p>Un programme détaillé jour par jour, avec lieux, activités, hébergements, carte interactive et checklist valise.</p>
       </div>
-      <div class="step">
+      <div class="step fade-up fade-up-delay-4">
         <div class="step-num">4</div>
         <h3>Partez l'esprit tranquille</h3>
-        <p>Vous profitez — sans stress de planning — d'un voyage pensé sur-mesure pour vous.</p>
+        <p>Vous profitez — sans stress de planning — d'un voyage pensé sur-mesure pour vous et vos proches.</p>
+      </div>
+    </div>
+
+    <div class="no-phone-box fade-up">
+      <div class="icon-big">💬</div>
+      <div>
+        <h3>Pourquoi uniquement par messages ?</h3>
+        <p>
+          <strong>Je suis maman, j'ai un métier, mes journées et soirées sont bien chargées — sûrement comme les vôtres.</strong>
+          C'est pour ça que j'ai choisi de fonctionner uniquement par messages : c'est plus fluide, on répond quand on peut, et ça n'enlève rien à la qualité de nos échanges — bien au contraire.
+          Vous avez tout le temps de réfléchir, de reformuler, et je peux prendre le temps de vous répondre avec soin.
+        </p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- EXAMPLE DELIVERABLE -->
-<section id="exemple">
+<!-- EXEMPLES -->
+<section id="exemples">
   <div class="container">
-    <span class="section-label">Exemple de livrable</span>
-    <h2>À quoi ressemble votre itinéraire ?</h2>
-    <p class="sub">Voici un aperçu du type de document que vous recevrez — clair, complet, prêt à glisser dans votre valise.</p>
+    <span class="section-label">Exemples de livrables</span>
+    <h2 class="fade-up">À quoi ressemble votre itinéraire ?</h2>
+    <p class="sub fade-up">Voici un aperçu du type de document que vous recevrez — clair, complet, prêt à glisser dans votre valise.</p>
 
-    <div class="livrable-card">
-      <h3>🇵🇹 Lisbonne &amp; Algarve en famille</h3>
-      <p class="trip-meta">7 jours · 2 adultes + 2 enfants (6 et 9 ans) · Budget moyen · Juillet</p>
-      <ul class="day-list">
-        <li>
-          <span class="day-num">J1</span>
-          <div>
-            <strong>Arrivée à Lisbonne &amp; quartier de Belém</strong>
-            Visite du Monastère des Hiéronymites (entrée ~15 € /adulte, gratuit -12 ans), dégustation du pastel de nata à la Pastéis de Belém. Hôtel recommandé : Bairro Alto Hotel 3★ (~110 €/nuit).
-          </div>
-        </li>
-        <li>
-          <span class="day-num">J2</span>
-          <div>
-            <strong>Alfama &amp; tramway 28</strong>
-            Balade dans les ruelles, Musée du Fado, coucher de soleil au Miradouro da Graça. Dîner familial au restaurant A Cevicheria (~25 €/personne).
-          </div>
-        </li>
-        <li>
-          <span class="day-num">J3</span>
-          <div>
-            <strong>Sintra – Palais &amp; forêts magiques</strong>
-            Palais de la Pena (idéal pour les enfants), jardins de Monserrate. Pique-nique à prévoir, navette locale ~5 €/pers.
-          </div>
-        </li>
-        <li>
-          <span class="day-num">J4–J7</span>
-          <div>
-            <strong>Route vers l'Algarve</strong>
-            Plages de Lagos, Praia da Marinha, croisière en grotte (~20 €/adulte). Retour et vol depuis Faro.
-          </div>
-        </li>
-      </ul>
-      <div class="livrable-note">
-        💡 <strong>Le livrable complet</strong> inclut : planning heure par heure, liens de réservation, carte interactive, conseils santé &amp; sécurité, budget prévisionnel détaillé, et alternatives météo.
+    <div class="exemple-tabs fade-up">
+      <button class="tab-btn active" onclick="showTab('itineraire')">🗺️ Itinéraire</button>
+      <button class="tab-btn" onclick="showTab('carte')">📍 Carte interactive</button>
+      <button class="tab-btn" onclick="showTab('valise')">🧳 Checklist valise</button>
+    </div>
+
+    <!-- TAB: Itinéraire -->
+    <div class="exemple-content active" id="tab-itineraire">
+      <div class="livrable-card fade-up">
+        <h3>🇵🇹 Lisbonne &amp; Algarve en famille</h3>
+        <p class="trip-meta">7 jours · 2 adultes + 2 enfants (6 et 9 ans) · Budget moyen · Juillet</p>
+        <ul class="day-list">
+          <li>
+            <span class="day-num">J1</span>
+            <div>
+              <strong>Arrivée à Lisbonne &amp; quartier de Belém</strong>
+              Visite du Monastère des Hiéronymites (entrée ~15 € /adulte, gratuit -12 ans), dégustation du pastel de nata à la Pastéis de Belém. Hôtel recommandé : Solar do Castelo 4★ (~130 €/nuit). Dîner au bord du Tage.
+            </div>
+          </li>
+          <li>
+            <span class="day-num">J2</span>
+            <div>
+              <strong>Alfama &amp; tramway 28</strong>
+              Balade dans les ruelles historiques, Musée du Fado, coucher de soleil au Miradouro da Graça. Dîner familial au restaurant A Travessa (~25 €/personne). Glaces artisanales à la Gelataria Nannarella.
+            </div>
+          </li>
+          <li>
+            <span class="day-num">J3</span>
+            <div>
+              <strong>Sintra – Palais &amp; forêts magiques</strong>
+              Palais de la Pena (idéal pour les enfants !), jardins de Monserrate, crêperie locale pour le déjeuner. Pique-nique dans les jardins. Navette locale ~5 €/pers. Retour à Lisbonne en soirée.
+            </div>
+          </li>
+          <li>
+            <span class="day-num">J4</span>
+            <div>
+              <strong>Route vers l'Algarve — Lagos</strong>
+              Départ le matin (3h de route). Arrivée à Lagos, balade sur le front de mer, première baignade à Praia Dona Ana. Location d'un appartement avec terrasse (~120 €/nuit). Dîner de poisson frais au port.
+            </div>
+          </li>
+          <li>
+            <span class="day-num">J5</span>
+            <div>
+              <strong>Grottes marines &amp; Praia da Marinha</strong>
+              Croisière en grotte depuis Albufeira (~20 €/adulte, 10 € enfant) — un moment magique garanti ! Pique-nique sur la plage de Marinha. Glaces, farniente, châteaux de sable.
+            </div>
+          </li>
+          <li>
+            <span class="day-num">J6</span>
+            <div>
+              <strong>Sagres &amp; Cap Saint-Vincent</strong>
+              Visite de la forteresse de Sagres, balade au cap le plus à l'ouest d'Europe. Déjeuner dans un café typique. Shopping souvenirs à Lagos l'après-midi.
+            </div>
+          </li>
+          <li>
+            <span class="day-num">J7</span>
+            <div>
+              <strong>Retour — vol depuis Faro</strong>
+              Matinée libre sur la plage. Départ depuis l'aéroport de Faro (45 min de Lagos). Dernières dégustations de pastéis de nata à l'aéroport !
+            </div>
+          </li>
+        </ul>
+        <div class="livrable-note">
+          💡 <strong>Le livrable complet</strong> inclut : planning heure par heure, liens de réservation, carte interactive, checklist valise, conseils santé &amp; sécurité, budget prévisionnel détaillé, et alternatives météo.
+        </div>
       </div>
     </div>
+
+    <!-- TAB: Carte interactive -->
+    <div class="exemple-content" id="tab-carte">
+      <div class="fade-up">
+        <p style="margin-bottom:1rem; color:var(--muted); font-size:.95rem;">
+          🗺️ Chaque itinéraire inclut une carte interactive avec tous les lieux clés de votre voyage.
+        </p>
+        <div id="voyage-map"></div>
+        <p style="margin-top:1rem; font-size:.85rem; color:var(--muted);">
+          Cliquez sur les marqueurs pour voir les détails de chaque étape. La carte est incluse dans votre livrable PDF et version interactive.
+        </p>
+      </div>
+    </div>
+
+    <!-- TAB: Checklist valise -->
+    <div class="exemple-content" id="tab-valise">
+      <div class="fade-up">
+        <p style="margin-bottom:1.5rem; color:var(--muted); font-size:.95rem;">
+          🧳 Votre livrable inclut une checklist valise personnalisée selon votre destination, la saison et la composition de votre famille.
+        </p>
+        <div class="packing-card">
+          <h4>🧳 Checklist valise — Portugal en famille (été)</h4>
+          <div class="packing-progress-label" id="packing-label">0 / 30 articles cochés</div>
+          <div class="packing-progress">
+            <div class="packing-progress-bar" id="packing-bar"></div>
+          </div>
+
+          <div class="packing-category">
+            <div class="packing-category-title">📄 Documents essentiels</div>
+            <div class="packing-items" id="packing-items">
+              <!-- Items injected by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -549,12 +959,11 @@
 <section id="avis">
   <div class="container">
     <span class="section-label">Ils ont voyagé avec VoyagIA</span>
-    <h2>Des familles ravies, des souvenirs inoubliables</h2>
-    <p class="sub">Découvrez ce que nos clients disent de leur expérience — des voyages pensés sur-mesure, livrés avec soin.</p>
+    <h2 class="fade-up">Des familles ravies, des souvenirs inoubliables</h2>
+    <p class="sub fade-up">Découvrez ce que nos clients disent de leur expérience — des voyages pensés sur-mesure, livrés avec soin.</p>
 
     <div class="testimonials-grid">
-
-      <div class="testimonial-card">
+      <div class="testimonial-card fade-up fade-up-delay-1">
         <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
         <p class="testimonial-quote">Notre séjour au Japon était parfaitement calibré pour nos deux ados. Chaque journée avait le bon équilibre entre temples, street food et moments libres. L'itinéraire était si détaillé qu'on n'avait qu'à suivre — zéro stress !</p>
         <div class="testimonial-author">
@@ -565,8 +974,7 @@
           </div>
         </div>
       </div>
-
-      <div class="testimonial-card">
+      <div class="testimonial-card fade-up fade-up-delay-2">
         <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
         <p class="testimonial-quote">J'avais un budget serré et deux enfants en bas âge. VoyagIA a trouvé des perles cachées en Crète qu'on n'aurait jamais découvertes seuls. La carte interactive incluse dans le livrable était super pratique sur place !</p>
         <div class="testimonial-author">
@@ -577,8 +985,7 @@
           </div>
         </div>
       </div>
-
-      <div class="testimonial-card">
+      <div class="testimonial-card fade-up fade-up-delay-3">
         <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
         <p class="testimonial-quote">En tant que grande famille (6 personnes dont 4 enfants), les voyages sont toujours un casse-tête. VoyagIA a pensé à tout — restaurants avec chaises hautes, musées gratuits moins de 12 ans, rythme adapté. Bluffant.</p>
         <div class="testimonial-author">
@@ -589,10 +996,9 @@
           </div>
         </div>
       </div>
-
     </div>
 
-    <div class="stats-banner">
+    <div class="stats-banner fade-up">
       <div class="stat-item">
         <div class="stat-num">98%</div>
         <div class="stat-label">clients satisfaits</div>
@@ -610,7 +1016,6 @@
         <div class="stat-label">délai de livraison moyen</div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -618,8 +1023,8 @@
 <section id="questionnaire">
   <div class="container">
     <span class="section-label">Questionnaire</span>
-    <h2>Parlons de votre voyage de rêve</h2>
-    <p class="sub">Plus vous nous en dites, plus votre itinéraire sera précis et adapté. Comptez environ 5 minutes.</p>
+    <h2 class="fade-up">Parlons de votre voyage de rêve</h2>
+    <p class="sub fade-up">Plus vous nous en dites, plus votre itinéraire sera précis et adapté. Comptez environ 5 minutes.</p>
 
     <form
       name="voyagia-questionnaire"
@@ -677,10 +1082,7 @@
           <input type="number" id="nb_enfants" name="nb_enfants" min="0" max="10" value="0" />
         </div>
 
-        <!-- Dynamic adult age dropdowns -->
         <div id="ages_adultes_container" class="form-full"></div>
-
-        <!-- Dynamic children age dropdowns -->
         <div id="ages_enfants_container" class="form-full"></div>
 
         <div class="form-full">
@@ -703,7 +1105,6 @@
             <label><input type="radio" name="type_dates" value="flexible" id="dates_flexibles" /> 🌊 Flexible</label>
           </div>
 
-          <!-- Dates précises : calendriers départ + retour -->
           <div id="dates_precises_fields" class="date-conditional" style="display:none;">
             <div class="date-row">
               <div>
@@ -717,7 +1118,6 @@
             </div>
           </div>
 
-          <!-- Dates flexibles : cases à cocher mois -->
           <div id="dates_flexibles_fields" class="date-conditional" style="display:none;">
             <label style="margin-bottom:.5rem;">Mois envisagés <span>*</span></label>
             <div class="months-group">
@@ -1002,7 +1402,6 @@
             <label><input type="radio" name="deja_reserve" value="tout" id="reserve_tout" /> ✅ Vols + hébergement</label>
           </div>
 
-          <!-- Détails vols (affiché si vols ou tout) -->
           <div id="vol_details" class="date-conditional" style="display:none;">
             <p style="font-size:.82rem;color:var(--muted);margin-bottom:.7rem;">Ces informations permettront à votre conseiller d'intégrer vos vols dans l'itinéraire.</p>
             <div class="date-row" style="margin-bottom:.8rem;">
@@ -1047,9 +1446,8 @@
             </div>
           </div>
 
-          <!-- Détails hébergement (affiché si hébergement ou tout) -->
           <div id="hotel_details" class="date-conditional" style="display:none;">
-            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.7rem;">Indiquez le ou les hébergements déjà réservés (ajoutez autant de lignes que nécessaire).</p>
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.7rem;">Indiquez le ou les hébergements déjà réservés.</p>
             <div id="hotel_list">
               <div class="hotel-entry" style="display:grid;grid-template-columns:1fr 1fr auto;gap:.7rem;align-items:end;margin-bottom:.6rem;">
                 <div>
@@ -1094,54 +1492,268 @@
   </div>
 </section>
 
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="fade-up">
+        <span class="section-label">Contact</span>
+        <h2 class="contact-tagline">Une question ?<br/>Je suis <em>là pour vous</em>.</h2>
+        <p class="contact-sub">N'hésitez pas à me contacter par email — je réponds toujours avec soin, à mon rythme, sans vous faire attendre des semaines.</p>
+        <a href="#questionnaire" class="btn-primary">Démarrer mon itinéraire →</a>
+      </div>
+      <div class="contact-info fade-up fade-up-delay-2">
+        <a href="mailto:voyagia@hotmail.com" class="contact-item">
+          <span class="icon">✉️</span>
+          <div>
+            <strong>Email</strong>
+            <span>voyagia@hotmail.com</span>
+          </div>
+        </a>
+        <div class="contact-item" style="cursor:default;">
+          <span class="icon">💬</span>
+          <div>
+            <strong>Échanges par messages uniquement</strong>
+            <span>Pas d'appels téléphoniques — pour plus de fluidité et de qualité dans nos échanges.</span>
+          </div>
+        </div>
+        <div class="contact-item" style="cursor:default;">
+          <span class="icon">⏱️</span>
+          <div>
+            <strong>Délai de réponse</strong>
+            <span>Sous 24 à 48h en semaine.</span>
+          </div>
+        </div>
+        <div class="contact-item" style="cursor:default;">
+          <span class="icon">🌍</span>
+          <div>
+            <strong>Destinations</strong>
+            <span>45+ destinations couvertes partout dans le monde.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <span class="logo-foot"><img src="logo.png" alt="VoyagIA" /></span>
+  <div class="footer-links">
+    <a href="#accueil">Accueil</a>
+    <a href="#services">Comment ça marche</a>
+    <a href="#exemples">Exemples</a>
+    <a href="#questionnaire">Questionnaire</a>
+    <a href="#contact">Contact</a>
+  </div>
   <p>Des voyages sur-mesure imaginés avec ❤️ et passion du voyage.</p>
   <p style="margin-top:.5rem;">Contact : <a href="mailto:voyagia@hotmail.com">voyagia@hotmail.com</a></p>
-  <p style="margin-top:1rem; font-size:.8rem; color:#aaa;">© 2025 VoyagIA – Tous droits réservés</p>
+  <p style="margin-top:1rem; font-size:.8rem; color:rgba(255,255,255,.4);">© 2025 VoyagIA – Tous droits réservés</p>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+  /* ── HAMBURGER MENU ── */
+  var burger = document.getElementById('nav-burger');
+  var navLinks = document.getElementById('nav-links');
+  burger.addEventListener('click', function() {
+    navLinks.classList.toggle('open');
+    burger.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      navLinks.classList.remove('open');
+      burger.classList.remove('open');
+    });
+  });
+
+  /* ── TABS (Exemples section) ── */
+  var mapInitialized = false;
+  function showTab(name) {
+    document.querySelectorAll('.exemple-content').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.classList.remove('active');
+    });
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+
+    if (name === 'carte' && !mapInitialized) {
+      initMap();
+      mapInitialized = true;
+    }
+    if (name === 'valise') {
+      renderPackingList();
+    }
+  }
+
+  /* ── LEAFLET MAP ── */
+  function initMap() {
+    var map = L.map('voyage-map', { scrollWheelZoom: false }).setView([38.7, -9.1], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 18,
+    }).addTo(map);
+
+    var greenIcon = L.divIcon({
+      className: '',
+      html: '<div style="background:#5a9b6a;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.25);">{n}</div>',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+    });
+
+    var stops = [
+      { lat: 38.7169, lng: -9.1399, label: 'J1–J3', title: 'Lisbonne', desc: 'Belém, Alfama, tramway 28' },
+      { lat: 38.7976, lng: -9.3896, label: 'J3', title: 'Sintra', desc: 'Palais de la Pena, forêts magiques' },
+      { lat: 37.1021, lng: -8.6731, label: 'J4–J6', title: 'Lagos', desc: 'Praia Dona Ana, grottes marines' },
+      { lat: 37.0142, lng: -7.9694, label: 'J7', title: 'Faro', desc: 'Aéroport de retour' },
+    ];
+
+    var latlngs = [];
+    stops.forEach(function(stop, i) {
+      var icon = L.divIcon({
+        className: '',
+        html: '<div style="background:#5a9b6a;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.25);">' + (i+1) + '</div>',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+      });
+      L.marker([stop.lat, stop.lng], { icon: icon })
+        .addTo(map)
+        .bindPopup('<strong>' + stop.label + ' — ' + stop.title + '</strong><br/>' + stop.desc);
+      latlngs.push([stop.lat, stop.lng]);
+    });
+
+    L.polyline(latlngs, { color: '#7fba8a', weight: 3, dashArray: '6, 8', opacity: .8 }).addTo(map);
+  }
+
+  /* ── PACKING LIST ── */
+  var packingData = [
+    { cat: '📄 Documents essentiels', items: ['Passeports (vérifier validité 6 mois)', 'Carte d\'identité', 'Billets d\'avion imprimés', 'Réservations hôtel imprimées', 'Carte CEAM (carte européenne)', 'Assurance voyage'] },
+    { cat: '👔 Vêtements adultes', items: ['T-shirts légers (×5)', 'Short ou jupe (×2)', 'Robe légère', 'Veste légère pour les soirées', 'Maillot de bain (×2)', 'Chaussures de marche confortables', 'Tongs ou sandales', 'Pyjamas'] },
+    { cat: '👧 Vêtements enfants', items: ['T-shirts enfants (×5)', 'Shorts enfants (×3)', 'Maillots de bain enfants (×2)', 'Chapeau anti-UV', 'Chaussures de plage'] },
+    { cat: '🏖️ Plage & soleil', items: ['Crème solaire haute protection', 'Crème solaire enfants (50+)', 'Lunettes de soleil adultes', 'Lunettes de soleil enfants', 'Serviettes de plage', 'Sac de plage étanche'] },
+    { cat: '💊 Santé & pharmacie', items: ['Médicaments ordonnance', 'Anti-douleurs', 'Pansements et antiseptique', 'Médicaments anti-diarrhée', 'Répulsif moustiques'] },
+  ];
+
+  var packingState = {};
+  var totalItems = 0;
+
+  function renderPackingList() {
+    var container = document.getElementById('packing-items');
+    if (container.children.length > 0) return; // already rendered
+
+    // Count total
+    packingData.forEach(function(cat) { totalItems += cat.items.length; });
+
+    // Clear and rebuild
+    container.parentNode.innerHTML = '';
+    var parent = container.parentNode;
+
+    packingData.forEach(function(cat, ci) {
+      var catDiv = document.createElement('div');
+      catDiv.className = 'packing-category';
+      var catTitle = document.createElement('div');
+      catTitle.className = 'packing-category-title';
+      catTitle.textContent = cat.title || cat.cat;
+      catDiv.appendChild(catTitle);
+
+      var itemsDiv = document.createElement('div');
+      itemsDiv.className = 'packing-items';
+
+      cat.items.forEach(function(item, ii) {
+        var key = ci + '-' + ii;
+        packingState[key] = packingState[key] || false;
+
+        var itemDiv = document.createElement('div');
+        itemDiv.className = 'packing-item' + (packingState[key] ? ' checked' : '');
+
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.id = 'pack-' + key;
+        cb.checked = packingState[key];
+
+        var lbl = document.createElement('label');
+        lbl.setAttribute('for', 'pack-' + key);
+        lbl.textContent = item;
+
+        cb.addEventListener('change', function() {
+          packingState[key] = cb.checked;
+          itemDiv.classList.toggle('checked', cb.checked);
+          updatePackingProgress();
+        });
+
+        itemDiv.appendChild(cb);
+        itemDiv.appendChild(lbl);
+        itemsDiv.appendChild(itemDiv);
+      });
+
+      catDiv.appendChild(itemsDiv);
+      parent.appendChild(catDiv);
+    });
+
+    updatePackingProgress();
+  }
+
+  function updatePackingProgress() {
+    var checked = Object.values(packingState).filter(Boolean).length;
+    var bar = document.getElementById('packing-bar');
+    var lbl = document.getElementById('packing-label');
+    if (!bar || !lbl) return;
+    var pct = totalItems > 0 ? Math.round(checked / totalItems * 100) : 0;
+    bar.style.width = pct + '%';
+    lbl.textContent = checked + ' / ' + totalItems + ' articles cochés' + (pct === 100 ? ' — Valise prête ! 🎉' : '');
+  }
+
+  /* ── INTERSECTION OBSERVER (Fade-up animations) ── */
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(function(el) {
+    observer.observe(el);
+  });
+
   /* ── Age dropdowns ── */
   function buildAgeSelect(name, id, minAge, maxAge) {
-    const sel = document.createElement('select');
+    var sel = document.createElement('select');
     sel.name = name;
     sel.id = id;
     sel.required = true;
-    const def = document.createElement('option');
+    var def = document.createElement('option');
     def.value = ''; def.textContent = '-- Âge --';
     sel.appendChild(def);
-    for (let age = minAge; age <= maxAge; age++) {
-      const opt = document.createElement('option');
+    for (var age = minAge; age <= maxAge; age++) {
+      var opt = document.createElement('option');
       opt.value = age;
-      if (age === 0) {
-        opt.textContent = '< 1 an';
-      } else {
-        opt.textContent = age + ' an' + (age > 1 ? 's' : '');
-      }
+      opt.textContent = age === 0 ? '< 1 an' : age + ' an' + (age > 1 ? 's' : '');
       sel.appendChild(opt);
     }
     return sel;
   }
 
   function updateAdultAges() {
-    const nb = parseInt(document.getElementById('nb_adultes').value) || 0;
-    const container = document.getElementById('ages_adultes_container');
+    var nb = parseInt(document.getElementById('nb_adultes').value) || 0;
+    var container = document.getElementById('ages_adultes_container');
     container.innerHTML = '';
     if (nb <= 0) return;
-    const lbl = document.createElement('label');
+    var lbl = document.createElement('label');
     lbl.textContent = 'Âge des adultes';
     lbl.style.marginBottom = '.4rem';
     container.appendChild(lbl);
-    const grid = document.createElement('div');
+    var grid = document.createElement('div');
     grid.className = 'age-dropdowns';
-    for (let i = 1; i <= nb; i++) {
-      const div = document.createElement('div');
-      const l = document.createElement('label');
+    for (var i = 1; i <= nb; i++) {
+      var div = document.createElement('div');
+      var l = document.createElement('label');
       l.setAttribute('for', 'age_adulte_' + i);
       l.textContent = 'Adulte ' + i;
-      const sel = buildAgeSelect('age_adulte_' + i, 'age_adulte_' + i, 18, 99);
+      var sel = buildAgeSelect('age_adulte_' + i, 'age_adulte_' + i, 18, 99);
       div.appendChild(l);
       div.appendChild(sel);
       grid.appendChild(div);
@@ -1150,22 +1762,22 @@
   }
 
   function updateChildrenAges() {
-    const nb = parseInt(document.getElementById('nb_enfants').value) || 0;
-    const container = document.getElementById('ages_enfants_container');
+    var nb = parseInt(document.getElementById('nb_enfants').value) || 0;
+    var container = document.getElementById('ages_enfants_container');
     container.innerHTML = '';
     if (nb <= 0) return;
-    const lbl = document.createElement('label');
+    var lbl = document.createElement('label');
     lbl.textContent = 'Âge des enfants';
     lbl.style.marginBottom = '.4rem';
     container.appendChild(lbl);
-    const grid = document.createElement('div');
+    var grid = document.createElement('div');
     grid.className = 'age-dropdowns';
-    for (let i = 1; i <= nb; i++) {
-      const div = document.createElement('div');
-      const l = document.createElement('label');
+    for (var i = 1; i <= nb; i++) {
+      var div = document.createElement('div');
+      var l = document.createElement('label');
       l.setAttribute('for', 'age_enfant_' + i);
       l.textContent = 'Enfant ' + i;
-      const sel = buildAgeSelect('age_enfant_' + i, 'age_enfant_' + i, 0, 17);
+      var sel = buildAgeSelect('age_enfant_' + i, 'age_enfant_' + i, 0, 17);
       div.appendChild(l);
       div.appendChild(sel);
       grid.appendChild(div);
@@ -1175,31 +1787,25 @@
 
   /* ── Date fields ── */
   function toggleDateFields() {
-    const precise = document.getElementById('dates_precises').checked;
-    const flexible = document.getElementById('dates_flexibles').checked;
-    const preciseFields = document.getElementById('dates_precises_fields');
-    const flexibleFields = document.getElementById('dates_flexibles_fields');
-    const dureeWrapper = document.getElementById('duree_wrapper');
-    const dureeInput = document.getElementById('duree');
-
+    var precise = document.getElementById('dates_precises').checked;
+    var flexible = document.getElementById('dates_flexibles').checked;
+    var preciseFields = document.getElementById('dates_precises_fields');
+    var flexibleFields = document.getElementById('dates_flexibles_fields');
+    var dureeWrapper = document.getElementById('duree_wrapper');
+    var dureeInput = document.getElementById('duree');
     preciseFields.style.display = precise ? '' : 'none';
     flexibleFields.style.display = flexible ? '' : 'none';
-
-    // Toggle required on date inputs
     document.getElementById('date_depart').required = precise;
     document.getElementById('date_retour').required = precise;
-
-    // Hide durée when dates are precise (auto-calculated from depart+retour)
     dureeWrapper.style.display = precise ? 'none' : '';
     dureeInput.required = !precise;
   }
 
   /* ── Budget buttons ── */
   function setBudget(value) {
-    const input = document.getElementById('budget_text');
+    var input = document.getElementById('budget_text');
     input.value = value;
-    // Highlight active button
-    document.querySelectorAll('.budget-btn').forEach(btn => {
+    document.querySelectorAll('.budget-btn').forEach(function(btn) {
       btn.classList.toggle('active', btn.textContent.includes(value));
     });
   }
@@ -1216,7 +1822,6 @@
     var hotelDiv = document.getElementById('hotel_details');
     if (volDiv) volDiv.style.display = showVols ? '' : 'none';
     if (hotelDiv) hotelDiv.style.display = showHotel ? '' : 'none';
-    // Toggle required on vol fields
     ['vol_compagnie_aller', 'vol_numero_aller', 'vol_date_aller'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.required = showVols;
@@ -1247,7 +1852,7 @@
 
   function updateRemoveBtns() {
     var entries = document.querySelectorAll('#hotel_list .hotel-entry');
-    entries.forEach(function(entry, i) {
+    entries.forEach(function(entry) {
       var btn = entry.querySelector('.hotel-remove-btn');
       if (btn) btn.style.display = entries.length > 1 ? '' : 'none';
     });
@@ -1255,11 +1860,11 @@
 
   /* ── Type de séjour (itinérant) ── */
   function toggleItinerantFields() {
-    const itinerant = document.getElementById('sejour_itinerant');
-    const fields = document.getElementById('itinerant_fields');
-    const minSel = document.getElementById('logements_min');
-    const maxSel = document.getElementById('logements_max');
-    const isItinerant = itinerant && itinerant.checked;
+    var itinerant = document.getElementById('sejour_itinerant');
+    var fields = document.getElementById('itinerant_fields');
+    var minSel = document.getElementById('logements_min');
+    var maxSel = document.getElementById('logements_max');
+    var isItinerant = itinerant && itinerant.checked;
     if (fields) fields.style.display = isItinerant ? '' : 'none';
     if (minSel) minSel.required = isItinerant;
     if (maxSel) maxSel.required = isItinerant;
@@ -1267,34 +1872,23 @@
 
   /* ── Init ── */
   document.addEventListener('DOMContentLoaded', function () {
-    // Adult ages
     updateAdultAges();
     document.getElementById('nb_adultes').addEventListener('input', updateAdultAges);
     document.getElementById('nb_adultes').addEventListener('change', updateAdultAges);
-
-    // Children ages
     document.getElementById('nb_enfants').addEventListener('input', updateChildrenAges);
     document.getElementById('nb_enfants').addEventListener('change', updateChildrenAges);
-
-    // Date type toggle
     document.querySelectorAll('input[name="type_dates"]').forEach(function (r) {
       r.addEventListener('change', toggleDateFields);
     });
-
-    // Type de séjour toggle
     document.querySelectorAll('input[name="type_sejour"]').forEach(function (r) {
       r.addEventListener('change', toggleItinerantFields);
     });
-
-    // Réservations existantes toggle
     document.querySelectorAll('input[name="deja_reserve"]').forEach(function (r) {
       r.addEventListener('change', toggleReserveDetails);
     });
     initHotelAdd();
-
-    // Clear budget button highlight when user types manually
     document.getElementById('budget_text').addEventListener('input', function () {
-      document.querySelectorAll('.budget-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.budget-btn').forEach(function(btn) { btn.classList.remove('active'); });
     });
   });
 </script>
