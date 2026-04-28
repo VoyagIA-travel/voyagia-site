@@ -658,6 +658,178 @@
     button[type=submit]:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(127,186,138,.5); }
     .form-note { color: var(--muted); font-size: .82rem; margin-top: .6rem; }
 
+    /* ── TARIFS SECTION ── */
+    #tarifs { background: var(--cream); }
+
+    .tarifs-intro {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: rgba(200,169,110,.12);
+      border: 1px solid rgba(200,169,110,.35);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.8rem;
+      margin-bottom: 3rem;
+      max-width: 760px;
+      font-size: 1rem; color: var(--text); line-height: 1.7;
+    }
+    .tarifs-intro-icon { font-size: 2rem; flex-shrink: 0; margin-top: .1rem; }
+
+    .tarifs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .tarif-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,.07);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      border: 2px solid transparent;
+      position: relative;
+      transition: transform .22s, box-shadow .22s, border-color .22s;
+    }
+    .tarif-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.11);
+      border-color: var(--green);
+    }
+    .tarif-card--popular {
+      border-color: var(--green);
+      background: linear-gradient(160deg, rgba(127,186,138,.08) 0%, #fff 60%);
+    }
+    .tarif-popular-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--green-dark); color: #fff;
+      font-size: .76rem; font-weight: 800; letter-spacing: .04em;
+      padding: .25rem .9rem; border-radius: 50px;
+      white-space: nowrap;
+    }
+    .tarif-icon { font-size: 2.2rem; margin-bottom: .3rem; }
+    .tarif-label { font-weight: 800; font-size: 1.05rem; color: var(--text); }
+    .tarif-duration { font-size: .85rem; color: var(--muted); margin-bottom: .5rem; }
+    .tarif-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem; color: var(--green-dark); line-height: 1;
+      margin: .4rem 0;
+    }
+    .tarif-price span { font-size: 1.3rem; vertical-align: super; margin-left: .1rem; }
+    .tarif-btn {
+      display: inline-block; margin-top: .6rem;
+      background: var(--sand); color: var(--green-dark);
+      border: 1.5px solid var(--green);
+      padding: .5rem 1.4rem; border-radius: 50px;
+      font-size: .9rem; font-weight: 700; text-decoration: none;
+      transition: background .18s, color .18s;
+    }
+    .tarif-btn:hover { background: var(--green); color: #fff; }
+    .tarif-card--popular .tarif-btn { background: var(--green); color: #fff; }
+    .tarif-card--popular .tarif-btn:hover { background: var(--green-dark); }
+
+    .tarifs-itinerant {
+      text-align: center; font-size: .95rem; color: var(--muted);
+      margin-bottom: 3rem;
+      background: var(--sand); border-radius: 10px; padding: .8rem 1.4rem;
+      display: inline-block;
+    }
+
+    .tarifs-urgence {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      padding: 2rem 2.5rem;
+      margin-bottom: 3rem;
+    }
+    .tarifs-urgence h3 { font-size: 1.1rem; margin-bottom: 1.2rem; }
+    .urgence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .urgence-item {
+      background: var(--sand);
+      border-radius: 10px; padding: 1rem 1.2rem;
+      display: flex; flex-direction: column; gap: .3rem;
+      border-left: 4px solid var(--green);
+    }
+    .urgence-item--urgent { border-left-color: #e07050; }
+    .urgence-delai { font-size: .88rem; color: var(--muted); }
+    .urgence-prix { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--green-dark); font-weight: 700; }
+    .urgence-item--urgent .urgence-prix { color: #c05030; }
+
+    .tarifs-details-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 768px) { .tarifs-details-grid { grid-template-columns: 1fr; } }
+
+    .tarifs-inclus, .tarifs-modalites {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      padding: 2rem;
+    }
+    .tarifs-inclus h3, .tarifs-modalites h3 { font-size: 1.05rem; margin-bottom: 1.2rem; }
+    .inclus-list { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+    .inclus-list li {
+      display: flex; align-items: center; gap: .8rem;
+      font-size: .95rem; padding: .5rem .7rem;
+      border-radius: 8px;
+      transition: background .15s;
+    }
+    .inclus-list li:hover { background: var(--sand); }
+    .inclus-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .modalite-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: .9rem 0;
+      border-bottom: 1px solid var(--sand);
+      font-size: .93rem; line-height: 1.6;
+    }
+    .modalite-item:last-child { border-bottom: none; }
+    .modalite-icon {
+      font-size: 1.4rem; flex-shrink: 0;
+      background: var(--sand); border-radius: 8px;
+      width: 2.4rem; height: 2.4rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .tarifs-faq {
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 2rem 2.5rem;
+      margin-bottom: 3rem;
+    }
+    .tarifs-faq h3 { font-size: 1.05rem; margin-bottom: 1.2rem; }
+    .faq-list { display: flex; flex-direction: column; gap: .7rem; }
+    .faq-item {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .faq-item summary {
+      padding: 1rem 1.4rem;
+      font-weight: 700; font-size: .95rem;
+      cursor: pointer;
+      list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background .15s;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+'; font-size: 1.2rem; color: var(--green-dark);
+      transition: transform .25s;
+    }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item summary:hover { background: var(--sand); }
+    .faq-item p {
+      padding: 0 1.4rem 1rem;
+      font-size: .93rem; color: var(--muted); line-height: 1.65;
+    }
+
+    .tarifs-cta { text-align: center; margin-top: 1rem; }
+
     /* ── CONTACT SECTION ── */
     #contact { background: var(--sand); }
     .contact-grid {
