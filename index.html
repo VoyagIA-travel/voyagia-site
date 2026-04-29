@@ -2120,7 +2120,10 @@
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
+  /* ── LUCIDE ICONS — init immediately (DOM already loaded at this point) ── */
+  lucide.createIcons();
   /* ── HAMBURGER MENU ── */
   var burger = document.getElementById('nav-burger');
   var navLinks = document.getElementById('nav-links');
