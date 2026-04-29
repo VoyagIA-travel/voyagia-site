@@ -243,7 +243,14 @@
     }
 
     /* ── SECTIONS COMMON ── */
-    section { padding: 5rem 1.5rem; }
+    section { padding: 5rem 1.5rem; position: relative; overflow: hidden; }
+
+    /* ── SECTION DECORATIONS (line-art) ── */
+    .sdeco { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .sd {
+      position: absolute;
+      color: var(--green-dark);
+    }
     .container { max-width: 1100px; margin: 0 auto; }
     .section-label {
       display: inline-block;
