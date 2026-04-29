@@ -113,6 +113,7 @@
     /* ── HERO ── */
     .hero {
       min-height: 92vh;
+      position: relative;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       text-align: center;
       padding: 5rem 1.5rem 4rem;
@@ -122,13 +123,34 @@
         var(--sand);
       overflow: hidden;
     }
-    .hero-logo { margin-bottom: 2rem; }
+    .hero-logo { margin-bottom: 2rem; position: relative; z-index: 1; }
     .hero-logo img {
-      height: 120px; width: 120px;
+      height: 160px; width: 160px;
       border-radius: 50%; object-fit: cover;
-      background: #fff; padding: 5px;
-      box-shadow: 0 0 0 3px var(--green), 0 8px 30px rgba(90,155,106,.3);
+      background: #fff; padding: 7px;
+      box-shadow: 0 0 0 4px var(--green), 0 12px 40px rgba(90,155,106,.4), 0 0 60px rgba(127,186,138,.2);
       animation: floatLogo 4s ease-in-out infinite;
+    }
+
+    /* ── HERO DECORATIONS (line-art) ── */
+    @keyframes floatA {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-12px) rotate(4deg); }
+    }
+    @keyframes floatB {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-9px) rotate(-5deg); }
+    }
+    @keyframes floatC {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-18px) rotate(3deg); }
+    }
+    .hero-deco {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .hero-deco-item {
+      position: absolute;
+      color: var(--green-dark);
     }
     @keyframes floatLogo {
       0%, 100% { transform: translateY(0); }
