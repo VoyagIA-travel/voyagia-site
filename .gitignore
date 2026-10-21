@@ -2,3 +2,7 @@
 Thumbs.db
 *.log
 node_modules/
+
+# Le gestionnaire d'installation Python de Windows depose un arbre de 180 Mo
+# dans le repertoire courant des qu'un outil appelle python/python3.
+Python/
