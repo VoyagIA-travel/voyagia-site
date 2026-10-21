@@ -2265,7 +2265,7 @@
     });
 
     updatePackingProgress();
-    lucide.createIcons();
+    if (window.lucide) { lucide.createIcons(); }
   }
 
   function updatePackingProgress() {
