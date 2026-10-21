@@ -2120,10 +2120,14 @@
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/lucide@1.61.0/dist/umd/lucide.min.js"></script>
 <script>
-  /* ── LUCIDE ICONS — init immediately (DOM already loaded at this point) ── */
-  lucide.createIcons();
+  /* ── LUCIDE ICONS — init immediately (DOM already loaded at this point) ──
+     Version figee : avec @latest, une future version majeure peut renommer des
+     icones et les faire disparaitre du site sans qu'on touche au code.
+     Appel garde : si le CDN ne repond pas, lucide est undefined et un appel nu
+     stoppe tout le reste du script (menu, onglets, carte, checklist, formulaire). */
+  if (window.lucide) { lucide.createIcons(); }
   /* ── HAMBURGER MENU ── */
   var burger = document.getElementById('nav-burger');
   var navLinks = document.getElementById('nav-links');
